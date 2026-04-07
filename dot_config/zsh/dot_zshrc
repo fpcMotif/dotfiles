@@ -1,0 +1,13 @@
+# ~/.config/zsh/.zshrc — Modular Zsh Configuration
+# Architecture: secrets -> rc.d/ modules (00-99) -> local overrides
+
+# 1. Load secret environment variables (API keys, tokens)
+[[ -f "$ZDOTDIR/.secret" ]] && source "$ZDOTDIR/.secret"
+
+# 2. Load modular configurations (numbered for deterministic order)
+if [[ -d "$ZDOTDIR/rc.d" ]]; then
+  for conf in "$ZDOTDIR/rc.d/"*.zsh(N); do
+    source "$conf"
+  done
+  unset conf
+fi

@@ -1,0 +1,163 @@
+# CLAUDE.md — Global Development Guidelines
+
+## Identity
+
+- **User**: f
+- **Primary tools**: Claude Code (Opus), Droid (Factory), Gemini CLI, OpenCode
+- **Package managers**: bun/bunx (NEVER npm/npx), pnpm, uv (Python), cargo (Rust)
+- **Terminal**: Ghostty + Kitty | Shell: Zsh | Prompt: Starship
+
+---
+
+## Rust CLI Tools (MANDATORY)
+
+| Instead of | Use | Why |
+|------------|-----|-----|
+| `ls` | `eza --icons --git` | Faster, git-aware, icons |
+| `cd` | Direct paths / `zoxide` | Memory-efficient |
+| `cat` | `bat` | Syntax highlighting |
+| `find` | `fd` | Faster, saner defaults |
+| `grep` (in Bash) | `rg` (ripgrep) | Much faster, respects .gitignore |
+| `top` | `btm` / `htop` | Better visualization |
+| `du` | `dust` | Visual disk usage |
+| `ps` | `procs` | Better process viewer |
+
+- `gemini -y -p "${query}"` for deep reasoning over large codebases -- sometimes better than rg/grep
+
+---
+
+## Search Policy (MANDATORY) — Match Query Type to Best Tool
+
+Each tool excels at a different kind of query. Pick by what you're asking, not by habit.
+
+### Structural / Indexed Lookups → codedb (MCP)
+When you need **symbol resolution, definitions, references, dependency graphs** -- zero false positives, O(1):
+
+| Query type | Tool |
+|------------|------|
+| Exact identifier lookup | `codedb_word` (4ns, inverted index) |
+| Symbol definition search | `codedb_symbol` (cross-file, import-aware) |
+| File outline / structure | `codedb_outline` (parsed symbols) |
+| Reverse dependency graph | `codedb_deps` ("what imports X?") |
+| Full-text search | `codedb_search` (trigram-accelerated) |
+| Recently changed files | `codedb_hot` |
+| File tree with metadata | `codedb_tree` |
+
+CLI fallback when MCP unavailable:
+```bash
+codedb word "Effect" .        # O(1) identifier lookup
+codedb outline src/main.ts    # file symbols
+codedb find "handleAuth"      # symbol definition search
+codedb search "WeComError"    # trigram full-text search
+```
+
+### Frecency-Ranked File Finding → fff (MCP)
+When you need **behavioral file discovery** (recently used, git-dirty, fuzzy match):
+
+| Query type | Tool |
+|------------|------|
+| Fuzzy file finding | `find_files` (frecency-ranked, git-dirty boost) |
+| Content grep | `grep` (mmap'd, smart ranking) |
+| Multi-pattern OR search | `multi_grep` (batch patterns) |
+
+### Semantic / Intent-Based Search → mgrep
+When the query is a **natural language question** about code meaning:
+```bash
+mgrep "What handles authentication?"           # semantic code search
+mgrep --web --answer "How to implement OAuth2"  # web search + AI summary
+mgrep -c "error handling patterns" src/         # with content snippets
+```
+
+### Syntactic / Structural Code Patterns → ast-grep (sg)
+When you need **AST-aware matching** that regex cannot do -- refactoring, API usage, structural patterns:
+```bash
+sg -p 'console.log($$$)' --lang ts              # find all console.log calls
+sg -p 'if ($COND) { return $RET }' --lang rust   # structural pattern match
+sg --rewrite 'logger.debug($$$)' -p 'console.log($$$)'  # structural replace
+sg -p 'useEffect($FN, [])' --lang tsx            # React hooks with empty deps
+sg -p 'fn $NAME($$$) -> Result<$T, $E>' --lang rust  # all Result-returning fns
+```
+Use ast-grep whenever the pattern depends on code structure, not string content.
+
+### Regex Content Search → Built-in Grep / rg
+For **text pattern matching** across files -- the built-in Grep tool IS ripgrep and is perfectly fine:
+- Simple string/regex searches in code
+- Finding TODO/FIXME comments
+- Locating import statements
+- Matching error messages, log strings
+
+### File Pattern Matching → Built-in Glob
+For **finding files by name/extension/path pattern** -- fast, modification-time sorted:
+- `**/*.ts` for all TypeScript files
+- `src/**/*.test.tsx` for test files
+- Config file discovery
+
+### Library/Dependency Understanding → DeepWiki (MCP)
+When you need to understand **how a third-party library works**:
+```
+mcp__deepwiki__read_wiki_structure(repo_name)
+mcp__deepwiki__ask_question(repo_name, question)
+```
+
+### Decision Quick-Reference
+
+| I need to... | Use |
+|--------------|-----|
+| Find where `handleAuth` is defined | codedb `codedb_symbol` |
+| Find what imports `UserService` | codedb `codedb_deps` |
+| Find recently edited files | codedb `codedb_hot` or fff `find_files` |
+| Find all `.tsx` files in `src/` | Built-in Glob |
+| Search for "TODO" comments | Built-in Grep |
+| Find all `console.log` calls structurally | ast-grep `sg -p 'console.log($$$)'` |
+| Understand what "handles auth" | mgrep (semantic) |
+| Refactor: rename a pattern across files | ast-grep `sg --rewrite` |
+| Understand how `zod` validation works | DeepWiki MCP |
+| Deep analysis of a complex bug | `gemini -y -p "Analyze..."` |
+| Regex search across codebase | Built-in Grep or `rg` in Bash |
+
+---
+
+## Deep Research Strategy (Gemini + DeepWiki)
+
+When debugging complex issues or understanding code at dependency boundaries:
+
+1. **Local analysis** — `gemini -y -p "Analyze <files/dirs> and explain <problem>"` for deep local code reasoning
+2. **Dependency docs** — `mcp__deepwiki__ask_question(repo_name, question)` to understand upstream library behavior
+3. **Synthesize** — cross-reference local analysis with library docs to find the root cause
+
+Use this combo especially when bugs are at the boundary between your code and a dependency. See `/deep-research` skill for full workflow.
+
+---
+
+## Git Workflow
+
+Always use `/lazygit` skill for Git operations. For quick operations:
+- `lg` — Launch lazygit TUI
+- Review changes before any commit
+- Use AI-assisted commit messages (press `c` in lazygit)
+- Use AI code review (select file, press `r` in lazygit)
+- Use mgrep search (press `m` in lazygit)
+- Use conventional commit format: `type(scope): message`
+
+---
+
+## Code Quality Standards
+
+- No unnecessary comments or defensive checks
+- No AI code slop (verbose explanations, unnecessary type assertions, any casts)
+- Follow existing patterns in the codebase
+- Security: never expose secrets, keys, or tokens in code or logs
+- Always check that libraries are already installed before using them
+- **ALWAYS use bun/bunx instead of npm/npx** for all package management and script execution
+
+---
+
+<available_skills>
+  <skill>
+    <name>deep-research</name>
+    <description>Deep code research combining Gemini CLI (gemini -y -p) analysis with DeepWiki MCP for comprehensive problem understanding. Use when debugging complex issues, understanding dependency behavior, or before major refactors. Triggers on "deep research", "investigate", "understand this deeply", "research this issue", "why does this happen".</description>
+    <location>$HOME/.agents/skills/deep-research/SKILL.md</location>
+  </skill>
+</available_skills>
+
+@RTK.md

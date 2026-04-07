@@ -1,0 +1,114 @@
+# Zsh root
+ZDOTDIR=$HOME/.config/zsh
+
+# Zsh related
+HISTFILE=$ZDOTDIR/.history
+HISTSIZE=10000
+SAVEHIST=10000
+KEYTIMEOUT=1  # makes the switch between modes quicker
+HISTORY_SUBSTRING_SEARCH_PREFIXED=1  # enables prefixed search for zsh-history-substring-search
+
+# Temporary variables
+__TREE_IGNORE="-I '.git' -I '*.py[co]' -I '__pycache__' $__TREE_IGNORE"
+__FD_COMMAND="-L -H --no-ignore-vcs ${__TREE_IGNORE//-I/-E} $__FD_COMMAND"
+
+# Software specific
+# Safe baseline for shells that start before interactive PATH setup.
+# ~/.zshrc will upgrade this to hx or nvim when available.
+export SHELL="/bin/zsh"
+export EDITOR="${EDITOR:-vi}"
+export VISUAL="${VISUAL:-$EDITOR}"
+
+export BAT_THEME="Catppuccin-macchiato"
+export HOMEBREW_NO_ANALYTICS=1
+export RANGER_LOAD_DEFAULT_RC="FALSE"
+export PNPM_HOME=$HOME/Library/pnpm
+
+export LESSKEYIN=$HOME/.config/less/.lesskey
+export LESSHISTFILE=$HOME/.config/less/.lesshst
+
+export FZF_DEFAULT_COMMAND="fd $__FD_COMMAND"
+export FZF_DEFAULT_OPTS="
+--reverse --ansi --no-multi
+--bind=ctrl-u:up,ctrl-e:down,ctrl-n:backward-char,ctrl-i:forward-char,ctrl-b:backward-word,ctrl-h:forward-word
+--border --color=dark
+--color=fg:-1,bg:-1,hl:#5fff87,fg+:-1,bg+:-1,hl+:#ffaf5f
+--color=info:#af87ff,prompt:#5fff87,pointer:#ff87d7,marker:#ff87d7,spinner:#ff87d7
+"
+if [[ -v __FZF_PREVIEW ]]; then
+	unset __FZF_PREVIEW
+	FZF_DEFAULT_OPTS="$FZF_DEFAULT_OPTS
+--preview='(
+	bat --color=always {} ||
+	tree -ahpCL 3 $__TREE_IGNORE {}
+) 2>/dev/null | head -n 100'"
+fi
+
+# Fix ncurses terminfo for Kitty / tmux / zerobrew tools (must be early for all subprocesses)
+# Put ~/.terminfo first so locally-compiled entries like xterm-kitty always win.
+export TERMINFO="$HOME/.terminfo"
+export TERMINFO_DIRS="$HOME/.terminfo:/Applications/kitty.app/Contents/Resources/kitty/terminfo:/Applications/kitty.app/Contents/Resources/terminfo:/opt/zerobrew/prefix/opt/ncurses/share/terminfo:/usr/share/terminfo"
+
+# Clean up
+unset __TREE_IGNORE
+unset __FD_COMMAND
+. "$HOME/.cargo/env"
+
+# Pi powerline — force Nerd Font glyphs (Warp Terminal supports them)
+export POWERLINE_NERD_FONTS=1
+
+# Kimi API key moved to ~/.config/zsh/.secret (never commit secrets in dotfiles)
+
+# CLIProxyAPI - route API calls through local proxy
+# WARNING: These override @ai-sdk/anthropic base URL for ALL tools (crush, opencode, etc.)
+# Only enable if cliproxy is actually running on port 8317
+# export ANTHROPIC_API_ENDPOINT=http://localhost:8317/api/provider/anthropic
+# export ANTHROPIC_API_KEY=local-amp-proxy-key
+# >>> zerobrew >>>
+# zerobrew
+export ZEROBREW_DIR=$HOME/.zerobrew
+export ZEROBREW_BIN=$HOME/.zerobrew/bin
+export ZEROBREW_ROOT=/opt/zerobrew
+export ZEROBREW_PREFIX=/opt/zerobrew
+export PKG_CONFIG_PATH="$ZEROBREW_PREFIX/lib/pkgconfig:${PKG_CONFIG_PATH:-}"
+
+# SSL/TLS certificates (only if ca-certificates is installed)
+if [ -z "${CURL_CA_BUNDLE:-}" ] || [ -z "${SSL_CERT_FILE:-}" ]; then
+  if [ -f "$ZEROBREW_PREFIX/opt/ca-certificates/share/ca-certificates/cacert.pem" ]; then
+    [ -z "${CURL_CA_BUNDLE:-}" ] && export CURL_CA_BUNDLE="$ZEROBREW_PREFIX/opt/ca-certificates/share/ca-certificates/cacert.pem"
+    [ -z "${SSL_CERT_FILE:-}" ] && export SSL_CERT_FILE="$ZEROBREW_PREFIX/opt/ca-certificates/share/ca-certificates/cacert.pem"
+  elif [ -f "$ZEROBREW_PREFIX/etc/ca-certificates/cacert.pem" ]; then
+    [ -z "${CURL_CA_BUNDLE:-}" ] && export CURL_CA_BUNDLE="$ZEROBREW_PREFIX/etc/ca-certificates/cacert.pem"
+    [ -z "${SSL_CERT_FILE:-}" ] && export SSL_CERT_FILE="$ZEROBREW_PREFIX/etc/ca-certificates/cacert.pem"
+  elif [ -f "$ZEROBREW_PREFIX/etc/openssl/cert.pem" ]; then
+    [ -z "${CURL_CA_BUNDLE:-}" ] && export CURL_CA_BUNDLE="$ZEROBREW_PREFIX/etc/openssl/cert.pem"
+    [ -z "${SSL_CERT_FILE:-}" ] && export SSL_CERT_FILE="$ZEROBREW_PREFIX/etc/openssl/cert.pem"
+  elif [ -f "$ZEROBREW_PREFIX/share/ca-certificates/cacert.pem" ]; then
+    [ -z "${CURL_CA_BUNDLE:-}" ] && export CURL_CA_BUNDLE="$ZEROBREW_PREFIX/share/ca-certificates/cacert.pem"
+    [ -z "${SSL_CERT_FILE:-}" ] && export SSL_CERT_FILE="$ZEROBREW_PREFIX/share/ca-certificates/cacert.pem"
+  fi
+fi
+
+if [ -z "${SSL_CERT_DIR:-}" ]; then
+  if [ -d "$ZEROBREW_PREFIX/etc/ca-certificates" ]; then
+    export SSL_CERT_DIR="$ZEROBREW_PREFIX/etc/ca-certificates"
+  elif [ -d "$ZEROBREW_PREFIX/etc/openssl/certs" ]; then
+    export SSL_CERT_DIR="$ZEROBREW_PREFIX/etc/openssl/certs"
+  elif [ -d "$ZEROBREW_PREFIX/share/ca-certificates" ]; then
+    export SSL_CERT_DIR="$ZEROBREW_PREFIX/share/ca-certificates"
+  fi
+fi
+
+# Helper function to safely append to PATH
+_zb_path_append() {
+    local argpath="$1"
+    case ":${PATH}:" in
+        *:"$argpath":*) ;;
+        *) export PATH="$argpath:$PATH" ;;
+    esac;
+}
+
+_zb_path_append "$ZEROBREW_BIN"
+_zb_path_append "$ZEROBREW_PREFIX/bin"
+
+# <<< zerobrew <<<

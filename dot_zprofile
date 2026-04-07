@@ -1,0 +1,12 @@
+
+# Homebrew shellenv intentionally disabled.
+# We use ~/.local/bin/brew as a smart router:
+# - formula-style package operations prefer zerobrew
+# - cask and unsupported brew operations route to Homebrew
+
+# Added by OrbStack: command-line tools and integration
+# Comment this line if you don't want it to be added again.
+source ~/.orbstack/shell/init.zsh 2>/dev/null || :
+
+# Obsidian CLI (official path)
+export PATH="$PATH:/Applications/Obsidian.app/Contents/MacOS"

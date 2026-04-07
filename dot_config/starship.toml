@@ -1,0 +1,131 @@
+# ~/.config/starship.toml — fast, legible, git-friendly prompt with Nerd Font glyphs
+
+"$schema" = 'https://starship.rs/config-schema.json'
+
+add_newline = true
+scan_timeout = 100
+command_timeout = 2000
+follow_symlinks = false
+
+format = """
+$directory$git_branch$git_status$nodejs$python$rust$golang$elixir$docker_context$line_break$character
+"""
+right_format = "$cmd_duration$time"
+
+[character]
+success_symbol = "[➜](bold green)"
+error_symbol = "[➜](bold red)"
+vicmd_symbol = "[❮](bold yellow)"
+
+[directory]
+truncation_length = 3
+truncate_to_repo = true
+style = "bold blue"
+read_only = " 󰌾"
+read_only_style = "red"
+
+[git_branch]
+symbol = " "
+format = "[$symbol$branch]($style) "
+style = "bold purple"
+
+[git_status]
+format = '([$all_status$ahead_behind]($style) )'
+style = "bold red"
+conflicted = " "
+ahead = "⇡${count}"
+behind = "⇣${count}"
+diverged = "⇕"
+modified = " "
+staged = " "
+deleted = " "
+untracked = " "
+
+[git_commit]
+tag_symbol = '  '
+
+[cmd_duration]
+min_time = 500
+format = "[$duration]($style) "
+style = "yellow"
+
+[time]
+disabled = false
+format = "[$time]($style) "
+time_format = "%H:%M"
+style = "dim cyan"
+
+# Language/tool modules
+[nodejs]
+disabled = false
+symbol = " "
+format = "[$symbol($version )]($style)"
+style = "bold green"
+
+[python]
+disabled = false
+symbol = " "
+format = "[${symbol}${pyenv_prefix}(${version} )($virtualenv )]($style)"
+style = "bold yellow"
+
+[rust]
+disabled = false
+symbol = "󱘗 "
+format = "[$symbol($version )]($style)"
+style = "bold red"
+
+[golang]
+disabled = false
+symbol = " "
+format = "[$symbol($version )]($style)"
+style = "bold cyan"
+
+[elixir]
+disabled = false
+symbol = " "
+format = "[$symbol($version (OTP $otp_version) )]($style)"
+style = "bold purple"
+
+[swift]
+symbol = " "
+
+[java]
+symbol = " "
+
+[kotlin]
+symbol = " "
+
+[lua]
+symbol = " "
+
+[ruby]
+symbol = " "
+
+[package]
+symbol = "󰏗 "
+
+[aws]
+symbol = " "
+disabled = true
+
+[docker_context]
+symbol = " "
+disabled = true
+
+[gcloud]
+disabled = true
+
+[kubernetes]
+disabled = true
+command_timeout = 1500
+
+[memory_usage]
+symbol = "󰍛 "
+
+[hostname]
+ssh_symbol = " "
+
+[os.symbols]
+Macos = " "
+Linux = " "
+Windows = "󰍲 "

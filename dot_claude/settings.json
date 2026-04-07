@@ -1,0 +1,76 @@
+{
+  "env": {
+    "API_TIMEOUT_MS": "3000000",
+    "CLAUDE_CODE_DISABLE_NONESSENTIAL_TRAFFIC": "1",
+    "ENABLE_LSP_TOOL": "1",
+    "CLAUDE_CODE_EXPERIMENTAL_AGENT_TEAMS": "1"
+  },
+  "permissions": {
+    "allow": [
+      "Bash(cliproxyapi -codex-login)",
+      "Bash(lsof:*)",
+      "Bash(cliproxyapi:*)",
+      "Bash(xargs kill -9)",
+      "Bash(fd:*)",
+      "Bash(eza:*)",
+      "Bash(bat:*)",
+      "Bash(mgrep:*)",
+      "Bash(ast-grep:*)",
+      "Bash(sg:*)",
+      "mcp__fff__find_files",
+      "mcp__fff__grep",
+      "mcp__fff__multi_grep"
+    ],
+    "defaultMode": "plan"
+  },
+  "model": "opus[1m]",
+  "enabledMcpjsonServers": [
+    "qmd"
+  ],
+  "hooks": {
+    "PreToolUse": [
+      {
+        "matcher": "Bash",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "$HOME/.claude/hooks/rtk-rewrite.sh"
+          }
+        ]
+      }
+    ]
+  },
+  "enabledPlugins": {
+    "swift-lsp@claude-plugins-official": true,
+    "rust-analyzer-lsp@claude-plugins-official": true,
+    "gopls-lsp@claude-plugins-official": true,
+    "mgrep@Mixedbread-Grep": true,
+    "code-simplifier@claude-plugins-official": true,
+    "code-review@claude-plugins-official": true,
+    "ralph-loop@claude-plugins-official": true,
+    "expert-lsp@elixir-expert": true,
+    "typescript-lsp@claude-plugins-official": true,
+    "context7@claude-plugins-official": true,
+    "skill-creator@claude-plugins-official": true,
+    "claude-md-management@claude-plugins-official": true,
+    "git@frad-dotclaude": true,
+    "gitflow@frad-dotclaude": true,
+    "github@frad-dotclaude": true,
+    "superpowers@frad-dotclaude": true,
+    "refactor@frad-dotclaude": true,
+    "code-context@frad-dotclaude": true,
+    "meeseeks-vetted@frad-dotclaude": true
+  },
+  "extraKnownMarketplaces": {
+    "frad-dotclaude": {
+      "source": {
+        "source": "github",
+        "repo": "FradSer/dotclaude"
+      },
+      "autoUpdate": true
+    }
+  },
+  "autoMemoryEnabled": true,
+  "autoDreamEnabled": true,
+  "skipDangerousModePermissionPrompt": true
+}

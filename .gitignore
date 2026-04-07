@@ -1,0 +1,15 @@
+# Secrets (NEVER commit)
+.secret
+*.secret
+.env
+.env.*
+
+# macOS
+.DS_Store
+._*
+
+# Zsh cache
+.zcompdump*
+.zsh_history
+.zsh_sessions/
+.history
