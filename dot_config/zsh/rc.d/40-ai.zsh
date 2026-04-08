@@ -16,21 +16,21 @@ _unset_ai_env() {
 cofficial() {
   (
     _unset_ai_env
-    "$HOME/.local/bin/claude" --dangerously-skip-permissions "$@"
+    "${HOME}/.local/bin/claude" --dangerously-skip-permissions "$@"
   )
 }
 
 function claude() {
   (
     _unset_ai_env
-    command "$HOME/.local/bin/claude" "$@"
+    command "${HOME}/.local/bin/claude" "$@"
   )
 }
 
 cc() {
   (
     _unset_ai_env
-    "$HOME/.local/bin/claude" --dangerously-skip-permissions "$@"
+    "${HOME}/.local/bin/claude" --dangerously-skip-permissions "$@"
   )
 }
 

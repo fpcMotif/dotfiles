@@ -6,17 +6,17 @@ if (( $+commands[zoxide] )); then
 fi
 
 # ── AI Tools Update Check (background) ──────────────────────────────────────
-if [[ -x "$HOME/.local/bin/update-ai-tools" ]]; then
-  ("$HOME/.local/bin/update-ai-tools" --check >/dev/null 2>&1 &)
+if [[ -x "${HOME}/.local/bin/update-ai-tools" ]]; then
+  ("${HOME}/.local/bin/update-ai-tools" --check >/dev/null 2>&1 &)
 fi
 
 # ── cmux Helpers ─────────────────────────────────────────────────────────────
-_CMUX_ZDOTDIR="${ZDOTDIR:-$HOME/.config/zsh}"
-[[ -r $_CMUX_ZDOTDIR/cmux.zsh ]] && source $_CMUX_ZDOTDIR/cmux.zsh
+_CMUX_ZDOTDIR="${ZDOTDIR:-${HOME}/.config/zsh}"
+[[ -r "${_CMUX_ZDOTDIR}/cmux.zsh" ]] && source "${_CMUX_ZDOTDIR}/cmux.zsh"
 unset _CMUX_ZDOTDIR
 
 # ── Consolidate Functions ────────────────────────────────────────────────────
-[[ -f $ZDOTDIR/function.zsh ]] && source $ZDOTDIR/function.zsh
+[[ -f "${ZDOTDIR}/function.zsh" ]] && source "${ZDOTDIR}/function.zsh"
 
 # ── Load Local Overrides (last, highest priority) ────────────────────────────
-[[ -r $HOME/.zshrc.local ]] && source $HOME/.zshrc.local
+[[ -r "${HOME}/.zshrc.local" ]] && source "${HOME}/.zshrc.local"

@@ -1,11 +1,11 @@
 # 20-fzf.zsh — FZF configuration, keybindings, and helper functions
 
 # ── FZF Init ─────────────────────────────────────────────────────────────────
-[ -f ~/.fzf.zsh ] && source ~/.fzf.zsh
+[[ -f ~/.fzf.zsh ]] && source ~/.fzf.zsh
 _FZF_BREW_PREFIX=$(brew --prefix 2>/dev/null)
-if [[ -n "$_FZF_BREW_PREFIX" ]]; then
-  [ -f $_FZF_BREW_PREFIX/opt/fzf/shell/completion.zsh ] && source $_FZF_BREW_PREFIX/opt/fzf/shell/completion.zsh
-  [ -f $_FZF_BREW_PREFIX/opt/fzf/shell/key-bindings.zsh ] && source $_FZF_BREW_PREFIX/opt/fzf/shell/key-bindings.zsh
+if [[ -n "${_FZF_BREW_PREFIX}" ]]; then
+  [[ -f ${_FZF_BREW_PREFIX}/opt/fzf/shell/completion.zsh ]] && source ${_FZF_BREW_PREFIX}/opt/fzf/shell/completion.zsh
+  [[ -f ${_FZF_BREW_PREFIX}/opt/fzf/shell/key-bindings.zsh ]] && source ${_FZF_BREW_PREFIX}/opt/fzf/shell/key-bindings.zsh
 fi
 unset _FZF_BREW_PREFIX
 
@@ -57,7 +57,6 @@ FZF-EOF" \
 
 # Interactive process killer
 fkill() {
-  local pid
-  pid=$(ps -ef | sed 1d | fzf --prompt='󰆙 ' -m | awk '{print $2}')
-  [[ -n "$pid" ]] && echo $pid | xargs kill -${1:-9}
+  local pids=(${(f)$(ps -ef | sed 1d | fzf --prompt='󰆙 ' -m | awk '{print $2}')})
+  [[ ${#pids[@]} -gt 0 ]] && kill -${1:-9} "${pids[@]}"
 }

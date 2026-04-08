@@ -12,14 +12,14 @@ ab() {
 
 # ── Bun ──────────────────────────────────────────────────────────────────────
 export BUN_INSTALL="$HOME/.bun"
-[ -s "$BUN_INSTALL/_bun" ] && source "$BUN_INSTALL/_bun"
-[ -s "$HOME/.bun/_bun" ] && source "$HOME/.bun/_bun"
+[[ -s "${BUN_INSTALL}/_bun" ]] && source "${BUN_INSTALL}/_bun"
+[[ -s "${HOME}/.bun/_bun" ]] && source "${HOME}/.bun/_bun"
 
 # ── GHCup (Haskell) ─────────────────────────────────────────────────────────
-[ -f "${GHCUP_INSTALL_BASE_PREFIX:=$HOME}/.ghcup/env" ] && source "${GHCUP_INSTALL_BASE_PREFIX:=$HOME}/.ghcup/env"
+[[ -f "${GHCUP_INSTALL_BASE_PREFIX:=${HOME}}/.ghcup/env" ]] && source "${GHCUP_INSTALL_BASE_PREFIX:=${HOME}}/.ghcup/env"
 
 # ── Kiro ─────────────────────────────────────────────────────────────────────
-[[ "$TERM_PROGRAM" == "kiro" ]] && . "$(kiro --locate-shell-integration-path zsh)"
+[[ "$TERM_PROGRAM" == "kiro" ]] && source "$(kiro --locate-shell-integration-path zsh)"
 
 # ── Mole ─────────────────────────────────────────────────────────────────────
 (( $+commands[mole] )) && eval "$(mole completion zsh)"

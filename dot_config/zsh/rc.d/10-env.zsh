@@ -45,7 +45,7 @@ path=(
 export PATH
 
 # ── CDPATH (jump to common dirs without full path) ────────────────────────────
-export CDPATH=".:$HOME:$HOME/Developer:$HOME/Downloads:$HOME/Documents"
+export CDPATH=".:${HOME}:${HOME}/Developer:${HOME}/Downloads:${HOME}/Documents"
 
 # ── Editor Setup ─────────────────────────────────────────────────────────────
 if (( $+commands[hx] )); then
@@ -57,10 +57,10 @@ else
 fi
 
 # ── Terminfo ─────────────────────────────────────────────────────────────────
-export TERMINFO="$HOME/.terminfo"
+export TERMINFO="${HOME}/.terminfo"
 typeset -aU _terminfo_dirs
 _terminfo_dirs=(
-  $HOME/.terminfo
+  ${HOME}/.terminfo
   /Applications/kitty.app/Contents/Resources/kitty/terminfo
   /Applications/kitty.app/Contents/Resources/terminfo
   /opt/zerobrew/prefix/opt/ncurses/share/terminfo
@@ -74,22 +74,22 @@ unset _terminfo_dirs
 alias sudo='sudo -E'
 
 # ── Build & SDK Flags ────────────────────────────────────────────────────────
-export PKG_CONFIG_PATH="/opt/homebrew/lib/pkgconfig:/opt/homebrew/opt/tcl-tk/lib/pkgconfig:$PKG_CONFIG_PATH"
+export PKG_CONFIG_PATH="/opt/homebrew/lib/pkgconfig:/opt/homebrew/opt/tcl-tk/lib/pkgconfig:${PKG_CONFIG_PATH}"
 export LDFLAGS="-L/opt/homebrew/lib -L/opt/homebrew/opt/tcl-tk/lib"
 export CPPFLAGS="-I/opt/homebrew/include -I/opt/homebrew/opt/tcl-tk/include"
 export CFLAGS="-I/opt/homebrew/opt/tcl-tk/include"
 export PYTHON_CONFIGURE_OPTS="--with-tcltk-includes='-I/opt/homebrew/opt/tcl-tk/include' --with-tcltk-libs='-L/opt/homebrew/opt/tcl-tk/lib -ltcl8.6 -ltk8.6'"
 export SDKROOT="$(xcrun --show-sdk-path 2>/dev/null)"
-[[ -n "$SDKROOT" ]] && {
-  export CFLAGS="-isysroot $SDKROOT $CFLAGS"
-  export CPPFLAGS="-isysroot $SDKROOT $CPPFLAGS"
+[[ -n "${SDKROOT}" ]] && {
+  export CFLAGS="-isysroot ${SDKROOT} ${CFLAGS}"
+  export CPPFLAGS="-isysroot ${SDKROOT} ${CPPFLAGS}"
 }
 
 # ── Theme Settings ───────────────────────────────────────────────────────────
 export BAT_THEME="Catppuccin-macchiato"
 export HOMEBREW_NO_ANALYTICS=1
 export RANGER_LOAD_DEFAULT_RC="FALSE"
-export PNPM_HOME=$HOME/Library/pnpm
-export LESSKEYIN=$HOME/.config/less/.lesskey
-export LESSHISTFILE=$HOME/.config/less/.lesshst
+export PNPM_HOME=${HOME}/Library/pnpm
+export LESSKEYIN=${HOME}/.config/less/.lesskey
+export LESSHISTFILE=${HOME}/.config/less/.lesshst
 export POWERLINE_NERD_FONTS=1
