@@ -5,9 +5,16 @@ export AGENT_BROWSER_CDP_URL="http://localhost:9222"
 alias canary-start='~/.local/bin/canary-debug'
 ab() {
     if ! curl -s "http://localhost:9222/json/version" > /dev/null 2>&1; then
-        ~/.local/bin/canary-debug > /dev/null 2>&1
+        if [[ -x ~/.local/bin/canary-debug ]]; then
+            ~/.local/bin/canary-debug > /dev/null 2>&1
+        fi
     fi
-    agent-browser "$@"
+    if (( $+commands[agent-browser] )); then
+        agent-browser "$@"
+    else
+        echo "agent-browser not found" >&2
+        return 1
+    fi
 }
 
 # ── Bun ──────────────────────────────────────────────────────────────────────
@@ -19,7 +26,7 @@ export BUN_INSTALL="$HOME/.bun"
 [ -f "${GHCUP_INSTALL_BASE_PREFIX:=$HOME}/.ghcup/env" ] && source "${GHCUP_INSTALL_BASE_PREFIX:=$HOME}/.ghcup/env"
 
 # ── Kiro ─────────────────────────────────────────────────────────────────────
-[[ "$TERM_PROGRAM" == "kiro" ]] && . "$(kiro --locate-shell-integration-path zsh)"
+[[ "$TERM_PROGRAM" == "kiro" ]] && (( $+commands[kiro] )) && . "$(kiro --locate-shell-integration-path zsh)"
 
 # ── Mole ─────────────────────────────────────────────────────────────────────
 (( $+commands[mole] )) && eval "$(mole completion zsh)"

@@ -2,7 +2,9 @@
 # Loaded first: sheldon plugins, post-plugin keybindings, starship prompt
 
 # ── Plugin Manager (sheldon) ────────────────────────────────────────────────
-eval "$(sheldon source)"
+if (( $+commands[sheldon] )); then
+  eval "$(sheldon source)"
+fi
 
 setopt HIST_IGNORE_ALL_DUPS
 bindkey -e

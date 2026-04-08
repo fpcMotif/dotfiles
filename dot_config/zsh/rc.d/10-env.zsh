@@ -7,9 +7,11 @@ setopt INTERACTIVE_COMMENTS HIST_FCNTL_LOCK HIST_FIND_NO_DUPS HIST_SAVE_NO_DUPS
 unsetopt NOMATCH AUTO_REMOVE_SLASH
 
 # ── History ──────────────────────────────────────────────────────────────────
-HISTFILE=${HISTFILE:-$HOME/.zsh_history}
+HISTFILE=${HISTFILE:-$ZDOTDIR/.history}
 HISTSIZE=100000
 SAVEHIST=100000
+KEYTIMEOUT=1  # makes the switch between modes quicker
+HISTORY_SUBSTRING_SEARCH_PREFIXED=1  # enables prefixed search for zsh-history-substring-search
 
 # ── PATH Configuration (Deduplicated) ────────────────────────────────────────
 typeset -U path PATH
@@ -85,7 +87,7 @@ export SDKROOT="$(xcrun --show-sdk-path 2>/dev/null)"
   export CPPFLAGS="-isysroot $SDKROOT $CPPFLAGS"
 }
 
-# ── Theme Settings ───────────────────────────────────────────────────────────
+# ── Theme & Tools Settings ───────────────────────────────────────────────────
 export BAT_THEME="Catppuccin-macchiato"
 export HOMEBREW_NO_ANALYTICS=1
 export RANGER_LOAD_DEFAULT_RC="FALSE"
