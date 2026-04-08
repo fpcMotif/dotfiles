@@ -102,6 +102,7 @@ fi
 # Helper function to safely append to PATH
 _zb_path_append() {
     local argpath="$1"
+    [[ -d "$argpath" ]] || return
     case ":${PATH}:" in
         *:"$argpath":*) ;;
         *) export PATH="$argpath:$PATH" ;;

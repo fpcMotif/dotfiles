@@ -2,12 +2,12 @@
 
 # ── Chrome Canary & agent-browser ────────────────────────────────────────────
 export AGENT_BROWSER_CDP_URL="http://localhost:9222"
-alias canary-start='~/.local/bin/canary-debug'
+[[ -x ~/.local/bin/canary-debug ]] && alias canary-start='~/.local/bin/canary-debug'
 ab() {
     if ! curl -s "http://localhost:9222/json/version" > /dev/null 2>&1; then
-        ~/.local/bin/canary-debug > /dev/null 2>&1
+        [[ -x ~/.local/bin/canary-debug ]] && ~/.local/bin/canary-debug > /dev/null 2>&1
     fi
-    agent-browser "$@"
+    (( $+commands[agent-browser] )) && agent-browser "$@"
 }
 
 # ── Bun ──────────────────────────────────────────────────────────────────────

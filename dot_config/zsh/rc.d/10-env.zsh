@@ -17,7 +17,6 @@ path=(
   $HOME/.local/bin
   /opt/zerobrew/prefix/bin
   /opt/zerobrew/prefix/sbin
-  /opt/homebrew/bin
   /usr/local/bin
   /usr/local/opt/python@3.13/bin
   /usr/local/opt/yt-dlp/bin
@@ -42,6 +41,7 @@ path=(
   /Applications/Obsidian.app/Contents/MacOS
   $path
 )
+[[ -d /opt/homebrew/bin ]] && path=(/opt/homebrew/bin $path)
 export PATH
 
 # ── CDPATH (jump to common dirs without full path) ────────────────────────────
@@ -74,11 +74,13 @@ unset _terminfo_dirs
 alias sudo='sudo -E'
 
 # ── Build & SDK Flags ────────────────────────────────────────────────────────
-export PKG_CONFIG_PATH="/opt/homebrew/lib/pkgconfig:/opt/homebrew/opt/tcl-tk/lib/pkgconfig:$PKG_CONFIG_PATH"
-export LDFLAGS="-L/opt/homebrew/lib -L/opt/homebrew/opt/tcl-tk/lib"
-export CPPFLAGS="-I/opt/homebrew/include -I/opt/homebrew/opt/tcl-tk/include"
-export CFLAGS="-I/opt/homebrew/opt/tcl-tk/include"
-export PYTHON_CONFIGURE_OPTS="--with-tcltk-includes='-I/opt/homebrew/opt/tcl-tk/include' --with-tcltk-libs='-L/opt/homebrew/opt/tcl-tk/lib -ltcl8.6 -ltk8.6'"
+if [[ -d /opt/homebrew ]]; then
+  export PKG_CONFIG_PATH="/opt/homebrew/lib/pkgconfig:/opt/homebrew/opt/tcl-tk/lib/pkgconfig:$PKG_CONFIG_PATH"
+  export LDFLAGS="-L/opt/homebrew/lib -L/opt/homebrew/opt/tcl-tk/lib"
+  export CPPFLAGS="-I/opt/homebrew/include -I/opt/homebrew/opt/tcl-tk/include"
+  export CFLAGS="-I/opt/homebrew/opt/tcl-tk/include"
+  export PYTHON_CONFIGURE_OPTS="--with-tcltk-includes='-I/opt/homebrew/opt/tcl-tk/include' --with-tcltk-libs='-L/opt/homebrew/opt/tcl-tk/lib -ltcl8.6 -ltk8.6'"
+fi
 export SDKROOT="$(xcrun --show-sdk-path 2>/dev/null)"
 [[ -n "$SDKROOT" ]] && {
   export CFLAGS="-isysroot $SDKROOT $CFLAGS"

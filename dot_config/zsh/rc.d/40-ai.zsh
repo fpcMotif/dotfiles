@@ -47,7 +47,9 @@ export CLIPROXY_CONFIG="${CLIPROXY_CONFIG:-$HOME/CLIProxyAPI/config.yaml}"
 
 _climode_get() {
   if [[ -f "$HOME/.config/climode.json" ]]; then
-    python3 -c "import json; print(json.load(open('$HOME/.config/climode.json')).get('$1','proxy'))" 2>/dev/null
+    python3 -c "import json
+try: print(json.load(open('$HOME/.config/climode.json')).get('$1','proxy'))
+except Exception: print('proxy')" 2>/dev/null
   else
     echo "proxy"
   fi

@@ -4,7 +4,8 @@ zmodload zsh/complist
 autoload -Uz compinit edit-command-line; zle -N edit-command-line
 
 # Only rebuild completion dump once per day
-if [[ -n ${ZDOTDIR}/.zcompdump(#qN.mh+24) ]]; then
+local dumps=(${ZDOTDIR}/.zcompdump(N.mh+24))
+if [[ ${#dumps[@]} -gt 0 ]]; then
   compinit
 else
   compinit -C

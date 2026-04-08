@@ -40,7 +40,7 @@ fgb() {
   branches=$(git branch --all | grep -v 'HEAD') &&
   branch=$(echo "$branches" | fzf --prompt='󱔎 ' --height 50% --layout=reverse --border \
     --preview "git log --oneline --graph --date=short --color=always --pretty='format:%C(auto)%h %C(magenta)%ad %C(cyan)%an %Creset%s' {1} | head -n 20") &&
-  git checkout $(echo "$branch" | sed "s/.* //" | sed "s#remotes/[^/]*/##")
+  git checkout "$(echo "$branch" | sed "s/.* //" | sed "s#remotes/[^/]*/##")"
 }
 
 # Interactive git log viewer
@@ -59,5 +59,5 @@ FZF-EOF" \
 fkill() {
   local pid
   pid=$(ps -ef | sed 1d | fzf --prompt='󰆙 ' -m | awk '{print $2}')
-  [[ -n "$pid" ]] && echo $pid | xargs kill -${1:-9}
+  [[ -n "$pid" ]] && echo "$pid" | xargs -r kill "-${1:-9}"
 }

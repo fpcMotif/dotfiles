@@ -41,16 +41,16 @@ oc-note() {
 
 # ── Obsidian Headless Sync (launchd) ─────────────────────────────────────────
 obd-load() {
-  launchctl bootstrap "gui/$(id -u)" "$HOME/Library/LaunchAgents/com.f.obsidian-headless.sync.plist" 2>/dev/null || true
+  [[ -f "$HOME/Library/LaunchAgents/com.f.obsidian-headless.sync.plist" ]] && launchctl bootstrap "gui/$(id -u)" "$HOME/Library/LaunchAgents/com.f.obsidian-headless.sync.plist" 2>/dev/null || true
 }
 obd-start() {
-  launchctl bootstrap "gui/$(id -u)" "$HOME/Library/LaunchAgents/com.f.obsidian-headless.sync.plist" 2>/dev/null || true
+  [[ -f "$HOME/Library/LaunchAgents/com.f.obsidian-headless.sync.plist" ]] && launchctl bootstrap "gui/$(id -u)" "$HOME/Library/LaunchAgents/com.f.obsidian-headless.sync.plist" 2>/dev/null || true
   launchctl kickstart -k "gui/$(id -u)/com.f.obsidian-headless.sync"
 }
 obd-stop() { launchctl bootout "gui/$(id -u)/com.f.obsidian-headless.sync"; }
 obd-reload() {
   launchctl bootout "gui/$(id -u)/com.f.obsidian-headless.sync" 2>/dev/null || true
-  launchctl bootstrap "gui/$(id -u)" "$HOME/Library/LaunchAgents/com.f.obsidian-headless.sync.plist"
+  [[ -f "$HOME/Library/LaunchAgents/com.f.obsidian-headless.sync.plist" ]] && launchctl bootstrap "gui/$(id -u)" "$HOME/Library/LaunchAgents/com.f.obsidian-headless.sync.plist"
   launchctl kickstart -k "gui/$(id -u)/com.f.obsidian-headless.sync"
 }
 obd-status() { launchctl print "gui/$(id -u)/com.f.obsidian-headless.sync"; }
