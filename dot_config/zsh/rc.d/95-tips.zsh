@@ -1,6 +1,6 @@
 # 95-tips.zsh — Random terminal tips on shell startup (inspired by FradSer)
 
-function _show_terminal_tip() {
+_show_terminal_tip() {
   [[ $- != *i* ]] && return
 
   local -a tips

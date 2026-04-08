@@ -1,11 +1,11 @@
 # 40-ai.zsh — AI tool wrappers, Claude provider system, CLIProxyAPI routing
 
-# ── Global AI Variables ──────────────────────────────────────────────────────
+# Global AI Variables
 export CLAUDE_CODE_EXPERIMENTAL_AGENT_TEAMS="1"
 export CLAUDE_CODE_EFFORT_LEVEL=max
 export CLAUDE_CODE_NO_FLICKER=1
 
-# ── Claude Official Wrapper ──────────────────────────────────────────────────
+# Claude Official Wrapper
 _unset_ai_env() {
   unset ANTHROPIC_API_KEY ANTHROPIC_API_URL ANTHROPIC_BASE_URL ANTHROPIC_AUTH_TOKEN \
         OPENAI_API_KEY OPENAI_API_KEY_ID OPENAI_BASE_URL OPENAI_API_BASE OPENAI_ENDPOINT \
@@ -20,7 +20,7 @@ cofficial() {
   )
 }
 
-function claude() {
+claude() {
   (
     _unset_ai_env
     command "$HOME/.local/bin/claude" "$@"
@@ -34,14 +34,14 @@ cc() {
   )
 }
 
-# ── Other AI CLI Wrappers ────────────────────────────────────────────────────
-alias gy='gemini -y'
-alias oc='opencode'
-alias cdx='codex-safe'
-alias cct='cmux claude-teams --dangerously-skip-permissions'
+# Other AI CLI Wrappers
+alias gy="gemini -y"
+alias oc="opencode"
+alias cdx="codex-safe"
+alias cct="cmux claude-teams --dangerously-skip-permissions"
 codex() { codex-safe "$@" }
 
-# ── CLIProxyAPI Routing ──────────────────────────────────────────────────────
+# CLIProxyAPI Routing
 export CLIPROXY_BASE_URL="${CLIPROXY_BASE_URL:-http://127.0.0.1:8317}"
 export CLIPROXY_CONFIG="${CLIPROXY_CONFIG:-$HOME/CLIProxyAPI/config.yaml}"
 

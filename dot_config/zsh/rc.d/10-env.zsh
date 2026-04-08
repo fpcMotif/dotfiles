@@ -1,17 +1,17 @@
 # 10-env.zsh — Environment, PATH, history, options, editor, build flags
 
-# ── Zsh Options ──────────────────────────────────────────────────────────────
+# Zsh Options
 setopt AUTO_CD AUTO_MENU COMPLETE_IN_WORD NO_BEEP PROMPT_CR
 setopt HIST_IGNORE_ALL_DUPS HIST_IGNORE_SPACE HIST_VERIFY SHARE_HISTORY
 setopt INTERACTIVE_COMMENTS HIST_FCNTL_LOCK HIST_FIND_NO_DUPS HIST_SAVE_NO_DUPS
 unsetopt NOMATCH AUTO_REMOVE_SLASH
 
-# ── History ──────────────────────────────────────────────────────────────────
+# History
 HISTFILE=${HISTFILE:-$HOME/.zsh_history}
 HISTSIZE=100000
 SAVEHIST=100000
 
-# ── PATH Configuration (Deduplicated) ────────────────────────────────────────
+# PATH Configuration (Deduplicated)
 typeset -U path PATH
 path=(
   $HOME/.local/bin
@@ -44,10 +44,10 @@ path=(
 )
 export PATH
 
-# ── CDPATH (jump to common dirs without full path) ────────────────────────────
+# CDPATH (jump to common dirs without full path)
 export CDPATH=".:$HOME:$HOME/Developer:$HOME/Downloads:$HOME/Documents"
 
-# ── Editor Setup ─────────────────────────────────────────────────────────────
+# Editor Setup
 if (( $+commands[hx] )); then
   export EDITOR=hx VISUAL=hx
 elif (( $+commands[nvim] )); then
@@ -56,7 +56,7 @@ else
   export EDITOR=vi VISUAL=vi
 fi
 
-# ── Terminfo ─────────────────────────────────────────────────────────────────
+# Terminfo
 export TERMINFO="$HOME/.terminfo"
 typeset -aU _terminfo_dirs
 _terminfo_dirs=(
@@ -71,9 +71,9 @@ _terminfo_dirs=(${_terminfo_dirs:#})
 (( ${#_terminfo_dirs[@]} > 0 )) && export TERMINFO_DIRS="${(j/:/)_terminfo_dirs}"
 unset _terminfo_dirs
 
-alias sudo='sudo -E'
+alias sudo="sudo -E"
 
-# ── Build & SDK Flags ────────────────────────────────────────────────────────
+# Build & SDK Flags
 export PKG_CONFIG_PATH="/opt/homebrew/lib/pkgconfig:/opt/homebrew/opt/tcl-tk/lib/pkgconfig:$PKG_CONFIG_PATH"
 export LDFLAGS="-L/opt/homebrew/lib -L/opt/homebrew/opt/tcl-tk/lib"
 export CPPFLAGS="-I/opt/homebrew/include -I/opt/homebrew/opt/tcl-tk/include"
@@ -85,7 +85,7 @@ export SDKROOT="$(xcrun --show-sdk-path 2>/dev/null)"
   export CPPFLAGS="-isysroot $SDKROOT $CPPFLAGS"
 }
 
-# ── Theme Settings ───────────────────────────────────────────────────────────
+# Theme Settings
 export BAT_THEME="Catppuccin-macchiato"
 export HOMEBREW_NO_ANALYTICS=1
 export RANGER_LOAD_DEFAULT_RC="FALSE"

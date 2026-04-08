@@ -9,8 +9,8 @@ KEYTIMEOUT=1  # makes the switch between modes quicker
 HISTORY_SUBSTRING_SEARCH_PREFIXED=1  # enables prefixed search for zsh-history-substring-search
 
 # Temporary variables
-__TREE_IGNORE="-I '.git' -I '*.py[co]' -I '__pycache__' $__TREE_IGNORE"
-__FD_COMMAND="-L -H --no-ignore-vcs ${__TREE_IGNORE//-I/-E} $__FD_COMMAND"
+__tree_ignore="-I '.git' -I '*.py[co]' -I '__pycache__' $__tree_ignore"
+__fd_command="-L -H --no-ignore-vcs ${__tree_ignore//-I/-E} $__fd_command"
 
 # Software specific
 # Safe baseline for shells that start before interactive PATH setup.
@@ -27,7 +27,7 @@ export PNPM_HOME=$HOME/Library/pnpm
 export LESSKEYIN=$HOME/.config/less/.lesskey
 export LESSHISTFILE=$HOME/.config/less/.lesshst
 
-export FZF_DEFAULT_COMMAND="fd $__FD_COMMAND"
+export FZF_DEFAULT_COMMAND="fd $__fd_command"
 export FZF_DEFAULT_OPTS="
 --reverse --ansi --no-multi
 --bind=ctrl-u:up,ctrl-e:down,ctrl-n:backward-char,ctrl-i:forward-char,ctrl-b:backward-word,ctrl-h:forward-word
@@ -36,11 +36,11 @@ export FZF_DEFAULT_OPTS="
 --color=info:#af87ff,prompt:#5fff87,pointer:#ff87d7,marker:#ff87d7,spinner:#ff87d7
 "
 if [[ -v __FZF_PREVIEW ]]; then
-	unset __FZF_PREVIEW
-	FZF_DEFAULT_OPTS="$FZF_DEFAULT_OPTS
+  unset __FZF_PREVIEW
+  FZF_DEFAULT_OPTS="$FZF_DEFAULT_OPTS
 --preview='(
-	bat --color=always {} ||
-	tree -ahpCL 3 $__TREE_IGNORE {}
+  bat --color=always {} ||
+  tree -ahpCL 3 $__tree_ignore {}
 ) 2>/dev/null | head -n 100'"
 fi
 
@@ -50,8 +50,8 @@ export TERMINFO="$HOME/.terminfo"
 export TERMINFO_DIRS="$HOME/.terminfo:/Applications/kitty.app/Contents/Resources/kitty/terminfo:/Applications/kitty.app/Contents/Resources/terminfo:/opt/zerobrew/prefix/opt/ncurses/share/terminfo:/usr/share/terminfo"
 
 # Clean up
-unset __TREE_IGNORE
-unset __FD_COMMAND
+unset __tree_ignore
+unset __fd_command
 . "$HOME/.cargo/env"
 
 # Pi powerline — force Nerd Font glyphs (Warp Terminal supports them)
@@ -101,11 +101,11 @@ fi
 
 # Helper function to safely append to PATH
 _zb_path_append() {
-    local argpath="$1"
-    case ":${PATH}:" in
-        *:"$argpath":*) ;;
-        *) export PATH="$argpath:$PATH" ;;
-    esac;
+  local argpath="$1"
+  case ":${PATH}:" in
+    *:"$argpath":*) ;;
+    *) export PATH="$argpath:$PATH" ;;
+  esac;
 }
 
 _zb_path_append "$ZEROBREW_BIN"

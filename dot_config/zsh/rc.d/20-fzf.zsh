@@ -1,30 +1,30 @@
 # 20-fzf.zsh — FZF configuration, keybindings, and helper functions
 
-# ── FZF Init ─────────────────────────────────────────────────────────────────
+# FZF Init
 [ -f ~/.fzf.zsh ] && source ~/.fzf.zsh
-_FZF_BREW_PREFIX=$(brew --prefix 2>/dev/null)
-if [[ -n "$_FZF_BREW_PREFIX" ]]; then
-  [ -f $_FZF_BREW_PREFIX/opt/fzf/shell/completion.zsh ] && source $_FZF_BREW_PREFIX/opt/fzf/shell/completion.zsh
-  [ -f $_FZF_BREW_PREFIX/opt/fzf/shell/key-bindings.zsh ] && source $_FZF_BREW_PREFIX/opt/fzf/shell/key-bindings.zsh
+_fzf_brew_prefix=$(brew --prefix 2>/dev/null)
+if [[ -n "$_fzf_brew_prefix" ]]; then
+  [ -f $_fzf_brew_prefix/opt/fzf/shell/completion.zsh ] && source $_fzf_brew_prefix/opt/fzf/shell/completion.zsh
+  [ -f $_fzf_brew_prefix/opt/fzf/shell/key-bindings.zsh ] && source $_fzf_brew_prefix/opt/fzf/shell/key-bindings.zsh
 fi
-unset _FZF_BREW_PREFIX
+unset _fzf_brew_prefix
 
-# ── Default Options (Nerd Font + modern palette) ─────────────────────────────
+# Default Options (Nerd Font + modern palette)
 export FZF_DEFAULT_COMMAND='fd --type f --hidden --follow --exclude .git'
 export FZF_DEFAULT_OPTS="--height 50% --layout=reverse --border --ansi \
   --prompt='󰭎 ' --pointer='󰁔 ' --marker='󰄬 ' \
   --color=fg:-1,bg:-1,hl:cyan,fg+:white,bg+:black,hl+:cyan \
   --color=info:yellow,prompt:cyan,pointer:green,marker:yellow,spinner:green,header:cyan"
 
-# ── CTRL-T: File search with bat preview ─────────────────────────────────────
+# CTRL-T: File search with bat preview
 export FZF_CTRL_T_COMMAND='fd --type f --hidden --exclude .git --color=always'
 export FZF_CTRL_T_OPTS="--preview 'bat --style=numbers --color=always --line-range :500 {}'"
 
-# ── ALT-C: Directory search with eza tree preview ────────────────────────────
+# ALT-C: Directory search with eza tree preview
 export FZF_ALT_C_COMMAND='fd --type d --hidden --exclude .git --color=always'
 export FZF_ALT_C_OPTS="--preview 'eza --tree --level=2 --icons --color=always {}'"
 
-# ── Helper Functions ─────────────────────────────────────────────────────────
+# Helper Functions
 
 # Find in files — interactive content search
 fif() {

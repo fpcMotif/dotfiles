@@ -9,7 +9,7 @@ alias ob-config="ob sync-config"
 alias ob-sync="ob sync"
 alias ob-watch="ob sync --continuous"
 
-# ── Notes CLI ────────────────────────────────────────────────────────────────
+# Notes CLI
 alias note="notesmd-cli"
 alias note-daily="notesmd-cli daily --editor"
 alias note-new="notesmd-cli create --editor"
@@ -25,7 +25,7 @@ jot() {
   echo "- $msg" >> "$daily_path" && echo "Noted to $daily_path"
 }
 
-# ── OpenCode Vault Shortcuts ─────────────────────────────────────────────────
+# OpenCode Vault Shortcuts
 oc-vault() { opencode "$OBSIDIAN_VAULT"; }
 oc-study() { opencode "$OBSIDIAN_VAULT/Learning"; }
 oc-daily() {
@@ -39,7 +39,7 @@ oc-note() {
   opencode "$note_path"
 }
 
-# ── Obsidian Headless Sync (launchd) ─────────────────────────────────────────
+# Obsidian Headless Sync (launchd)
 obd-load() {
   launchctl bootstrap "gui/$(id -u)" "$HOME/Library/LaunchAgents/com.f.obsidian-headless.sync.plist" 2>/dev/null || true
 }
