@@ -16,21 +16,30 @@ _unset_ai_env() {
 cofficial() {
   (
     _unset_ai_env
-    "$HOME/.local/bin/claude" --dangerously-skip-permissions "$@"
+    local CLAUDE_BIN="$HOME/.local/bin/claude"
+    [[ ! -x "$CLAUDE_BIN" ]] && CLAUDE_BIN="$(command -v claude 2>/dev/null)"
+    [[ -z "$CLAUDE_BIN" ]] && { echo "claude not found" >&2; return 1; }
+    "$CLAUDE_BIN" --dangerously-skip-permissions "$@"
   )
 }
 
 function claude() {
   (
     _unset_ai_env
-    command "$HOME/.local/bin/claude" "$@"
+    local CLAUDE_BIN="$HOME/.local/bin/claude"
+    [[ ! -x "$CLAUDE_BIN" ]] && CLAUDE_BIN="$(command -v claude 2>/dev/null)"
+    [[ -z "$CLAUDE_BIN" ]] && { echo "claude not found" >&2; return 1; }
+    command "$CLAUDE_BIN" "$@"
   )
 }
 
 cc() {
   (
     _unset_ai_env
-    "$HOME/.local/bin/claude" --dangerously-skip-permissions "$@"
+    local CLAUDE_BIN="$HOME/.local/bin/claude"
+    [[ ! -x "$CLAUDE_BIN" ]] && CLAUDE_BIN="$(command -v claude 2>/dev/null)"
+    [[ -z "$CLAUDE_BIN" ]] && { echo "claude not found" >&2; return 1; }
+    "$CLAUDE_BIN" --dangerously-skip-permissions "$@"
   )
 }
 
@@ -47,7 +56,7 @@ export CLIPROXY_CONFIG="${CLIPROXY_CONFIG:-$HOME/CLIProxyAPI/config.yaml}"
 
 _climode_get() {
   if [[ -f "$HOME/.config/climode.json" ]]; then
-    python3 -c "import json; print(json.load(open('$HOME/.config/climode.json')).get('$1','proxy'))" 2>/dev/null
+    python3 -c 'import json, sys; print(json.load(open(sys.argv[1])).get(sys.argv[2], "proxy"))' "$HOME/.config/climode.json" "$1" 2>/dev/null
   else
     echo "proxy"
   fi
@@ -56,29 +65,29 @@ _climode_get() {
 opencode() {
   case "${1:-}" in
     auth) (_unset_ai_env; command opencode "$@") ;;
-    *) if [[ "$(_climode_get opencode)" == "direct" ]]; then command opencode "$@"; else with-cliproxy opencode "$@"; fi ;;
+    *) if [[ "$(_climode_get opencode)" == "direct" ]] || ! command -v with-cliproxy >/dev/null 2>&1; then command opencode "$@"; else (_unset_ai_env; with-cliproxy opencode "$@"); fi ;;
   esac
 }
 
 amp() {
   case "${1:-}" in
     login|logout|whoami|auth) (_unset_ai_env; command amp "$@") ;;
-    *) if [[ "$(_climode_get amp)" == "direct" ]]; then command amp "$@"; else with-cliproxy amp "$@"; fi ;;
+    *) if [[ "$(_climode_get amp)" == "direct" ]] || ! command -v with-cliproxy >/dev/null 2>&1; then command amp "$@"; else (_unset_ai_env; with-cliproxy amp "$@"); fi ;;
   esac
 }
 
-crush() { if [[ "$(_climode_get crush)" == "direct" ]]; then command crush "$@"; else with-cliproxy crush "$@"; fi }
+crush() { if [[ "$(_climode_get crush)" == "direct" ]] || ! command -v with-cliproxy >/dev/null 2>&1; then command crush "$@"; else (_unset_ai_env; with-cliproxy crush "$@"); fi; }
 
 droid() {
   case "${1:-}" in
     login|logout|whoami|auth) (_unset_ai_env; command droid "$@") ;;
-    *) if [[ "$(_climode_get droid)" == "direct" ]]; then command droid "$@"; else with-cliproxy droid "$@"; fi ;;
+    *) if [[ "$(_climode_get droid)" == "direct" ]] || ! command -v with-cliproxy >/dev/null 2>&1; then command droid "$@"; else (_unset_ai_env; with-cliproxy droid "$@"); fi ;;
   esac
 }
 
 pi() {
   case "${1:-}" in
     login|logout|whoami|auth) (_unset_ai_env; command pi "$@") ;;
-    *) if [[ "$(_climode_get pi)" == "direct" ]]; then (_unset_ai_env; command pi "$@"); else with-cliproxy pi "$@"; fi ;;
+    *) if [[ "$(_climode_get pi)" == "direct" ]] || ! command -v with-cliproxy >/dev/null 2>&1; then (_unset_ai_env; command pi "$@"); else (_unset_ai_env; with-cliproxy pi "$@"); fi ;;
   esac
 }

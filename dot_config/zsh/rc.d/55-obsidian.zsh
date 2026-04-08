@@ -21,8 +21,9 @@ alias note-open="notesmd-cli open --editor"
 jot() {
   local msg="$*"
   local daily_path
-  daily_path="$(notesmd-cli daily --print-path)" || return 1
-  echo "- $msg" >> "$daily_path" && echo "Noted to $daily_path"
+  daily_path="$(notesmd-cli daily --print-path 2>/dev/null)" || return 1
+  [[ -z "$daily_path" ]] && { echo "Failed to determine daily note path" >&2; return 1; }
+  printf -- "- %s\n" "$msg" >> "$daily_path" && printf "Noted to %s\n" "$daily_path"
 }
 
 # ── OpenCode Vault Shortcuts ─────────────────────────────────────────────────
@@ -30,12 +31,14 @@ oc-vault() { opencode "$OBSIDIAN_VAULT"; }
 oc-study() { opencode "$OBSIDIAN_VAULT/Learning"; }
 oc-daily() {
   local daily_path
-  daily_path="$(notesmd-cli daily --print-path)" || return 1
+  daily_path="$(notesmd-cli daily --print-path 2>/dev/null)" || return 1
+  [[ -z "$daily_path" ]] && return 1
   opencode "$daily_path"
 }
 oc-note() {
   local note_path
-  note_path="$(notesmd-cli create --print-path "$@")" || return 1
+  note_path="$(notesmd-cli create --print-path "$@" 2>/dev/null)" || return 1
+  [[ -z "$note_path" ]] && return 1
   opencode "$note_path"
 }
 
