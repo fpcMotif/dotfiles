@@ -1,18 +1,27 @@
 # 30-aliases.zsh — System aliases, modern tool replacements, git shortcuts
 
 # ── 1. Modern Tool Replacements ──────────────────────────────────────────────
-alias ls='eza --icons --git --group-directories-first'
-alias ll='eza -lh --icons --git --group-directories-first'
-alias la='eza -la --icons --git --group-directories-first'
-alias lt='eza -lT --level=2 --icons'
-alias tree='eza --tree --icons --git-ignore'
-alias cat='bat --paging=never'
-alias preview='bat --style=numbers --color=always'
-alias find='fd'
-alias du='dust'
-alias ps='procs'
-alias top='btm'
-function grep() { rg "$@" }
+if (( $+commands[eza] )); then
+    alias ls='eza --icons --git --group-directories-first'
+    alias ll='eza -lh --icons --git --group-directories-first'
+    alias la='eza -la --icons --git --group-directories-first'
+    alias lt='eza -lT --level=2 --icons'
+    alias tree='eza --tree --icons --git-ignore'
+fi
+
+if (( $+commands[bat] )); then
+    alias cat='bat --paging=never'
+    alias preview='bat --style=numbers --color=always'
+fi
+
+(( $+commands[fd] )) && alias find='fd'
+(( $+commands[dust] )) && alias du='dust'
+(( $+commands[procs] )) && alias ps='procs'
+(( $+commands[btm] )) && alias top='btm'
+
+if (( $+commands[rg] )); then
+    function grep() { rg "$@" }
+fi
 
 # ── 2. Navigation ────────────────────────────────────────────────────────────
 alias ..="cd .."
@@ -26,7 +35,7 @@ alias ip="ipconfig getifaddr en0"
 
 # ── 3. Git (Essential OMZ set) ───────────────────────────────────────────────
 alias g="git"
-alias lg='lazygit'
+(( $+commands[lazygit] )) && alias lg='lazygit'
 
 # Status & Diff
 alias gst="git status"
@@ -64,20 +73,22 @@ alias gstp="git stash pop"
 alias gstl="git stash list"
 
 # ── 4. Package Managers ──────────────────────────────────────────────────────
-alias p="pnpm"
+(( $+commands[pnpm] )) && alias p="pnpm"
 alias brewst="brew bundle --file=~/.local/share/chezmoi/Brewfile 2>/dev/null || brew list"
 
 # ── 5. Misc Tools ────────────────────────────────────────────────────────────
-alias sg='ast-grep'
+(( $+commands[ast-grep] )) && alias sg='ast-grep'
 alias claude-conductor='"$HOME/Library/Application Support/com.conductor.app/bin/claude"'
 alias pymobiledevice3="source ~/.venv/bin/activate && python -m pymobiledevice3"
 
 # ── 6. mgrep (semantic search) ───────────────────────────────────────────────
-alias mg='mgrep search'
-alias mgc='mgrep search -c'
-alias mga='mgrep search -a'
-alias mgw='mgrep search -w'
-alias mgwa='mgrep search -w -a'
-alias mgs='mgrep search -s'
-function mgsearch() { mgrep search -c -m 20 "$@" }
-function webai() { mgrep search -w -a "$@" }
+if (( $+commands[mgrep] )); then
+    alias mg='mgrep search'
+    alias mgc='mgrep search -c'
+    alias mga='mgrep search -a'
+    alias mgw='mgrep search -w'
+    alias mgwa='mgrep search -w -a'
+    alias mgs='mgrep search -s'
+    function mgsearch() { mgrep search -c -m 20 "$@" }
+    function webai() { mgrep search -w -a "$@" }
+fi
