@@ -9,4 +9,6 @@
 source ~/.orbstack/shell/init.zsh 2>/dev/null || :
 
 # Obsidian CLI (official path)
-export PATH="$PATH:/Applications/Obsidian.app/Contents/MacOS"
+if [[ "$OSTYPE" == darwin* ]]; then
+  export PATH="$PATH:/Applications/Obsidian.app/Contents/MacOS"
+fi

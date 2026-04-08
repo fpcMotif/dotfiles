@@ -17,10 +17,6 @@ path=(
   $HOME/.local/bin
   /opt/zerobrew/prefix/bin
   /opt/zerobrew/prefix/sbin
-  /opt/homebrew/bin
-  /usr/local/bin
-  /usr/local/opt/python@3.13/bin
-  /usr/local/opt/yt-dlp/bin
   $HOME/bin
   $HOME/.bun/bin
   $HOME/.ghcup/bin
@@ -39,9 +35,19 @@ path=(
   $HOME/.amp/bin
   $HOME/.local/quarto/bin
   $HOME/.fabro/bin
-  /Applications/Obsidian.app/Contents/MacOS
   $path
 )
+
+if [[ "$OSTYPE" == darwin* ]]; then
+  path=(
+    /opt/homebrew/bin
+    /usr/local/bin
+    /usr/local/opt/python@3.13/bin
+    /usr/local/opt/yt-dlp/bin
+    /Applications/Obsidian.app/Contents/MacOS
+    $path
+  )
+fi
 export PATH
 
 # ── CDPATH (jump to common dirs without full path) ────────────────────────────
@@ -74,16 +80,18 @@ unset _terminfo_dirs
 alias sudo='sudo -E'
 
 # ── Build & SDK Flags ────────────────────────────────────────────────────────
-export PKG_CONFIG_PATH="/opt/homebrew/lib/pkgconfig:/opt/homebrew/opt/tcl-tk/lib/pkgconfig:$PKG_CONFIG_PATH"
-export LDFLAGS="-L/opt/homebrew/lib -L/opt/homebrew/opt/tcl-tk/lib"
-export CPPFLAGS="-I/opt/homebrew/include -I/opt/homebrew/opt/tcl-tk/include"
-export CFLAGS="-I/opt/homebrew/opt/tcl-tk/include"
-export PYTHON_CONFIGURE_OPTS="--with-tcltk-includes='-I/opt/homebrew/opt/tcl-tk/include' --with-tcltk-libs='-L/opt/homebrew/opt/tcl-tk/lib -ltcl8.6 -ltk8.6'"
-export SDKROOT="$(xcrun --show-sdk-path 2>/dev/null)"
-[[ -n "$SDKROOT" ]] && {
-  export CFLAGS="-isysroot $SDKROOT $CFLAGS"
-  export CPPFLAGS="-isysroot $SDKROOT $CPPFLAGS"
-}
+if [[ "$OSTYPE" == darwin* ]]; then
+  export PKG_CONFIG_PATH="/opt/homebrew/lib/pkgconfig:/opt/homebrew/opt/tcl-tk/lib/pkgconfig:$PKG_CONFIG_PATH"
+  export LDFLAGS="-L/opt/homebrew/lib -L/opt/homebrew/opt/tcl-tk/lib"
+  export CPPFLAGS="-I/opt/homebrew/include -I/opt/homebrew/opt/tcl-tk/include"
+  export CFLAGS="-I/opt/homebrew/opt/tcl-tk/include"
+  export PYTHON_CONFIGURE_OPTS="--with-tcltk-includes='-I/opt/homebrew/opt/tcl-tk/include' --with-tcltk-libs='-L/opt/homebrew/opt/tcl-tk/lib -ltcl8.6 -ltk8.6'"
+  export SDKROOT="$(xcrun --show-sdk-path 2>/dev/null)"
+  [[ -n "$SDKROOT" ]] && {
+    export CFLAGS="-isysroot $SDKROOT $CFLAGS"
+    export CPPFLAGS="-isysroot $SDKROOT $CPPFLAGS"
+  }
+fi
 
 # ── Theme Settings ───────────────────────────────────────────────────────────
 export BAT_THEME="Catppuccin-macchiato"

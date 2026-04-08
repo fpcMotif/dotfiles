@@ -40,20 +40,22 @@ oc-note() {
 }
 
 # ── Obsidian Headless Sync (launchd) ─────────────────────────────────────────
-obd-load() {
-  launchctl bootstrap "gui/$(id -u)" "$HOME/Library/LaunchAgents/com.f.obsidian-headless.sync.plist" 2>/dev/null || true
-}
-obd-start() {
-  launchctl bootstrap "gui/$(id -u)" "$HOME/Library/LaunchAgents/com.f.obsidian-headless.sync.plist" 2>/dev/null || true
-  launchctl kickstart -k "gui/$(id -u)/com.f.obsidian-headless.sync"
-}
-obd-stop() { launchctl bootout "gui/$(id -u)/com.f.obsidian-headless.sync"; }
-obd-reload() {
-  launchctl bootout "gui/$(id -u)/com.f.obsidian-headless.sync" 2>/dev/null || true
-  launchctl bootstrap "gui/$(id -u)" "$HOME/Library/LaunchAgents/com.f.obsidian-headless.sync.plist"
-  launchctl kickstart -k "gui/$(id -u)/com.f.obsidian-headless.sync"
-}
-obd-status() { launchctl print "gui/$(id -u)/com.f.obsidian-headless.sync"; }
+if [[ "$OSTYPE" == darwin* ]]; then
+  obd-load() {
+    launchctl bootstrap "gui/$(id -u)" "$HOME/Library/LaunchAgents/com.f.obsidian-headless.sync.plist" 2>/dev/null || true
+  }
+  obd-start() {
+    launchctl bootstrap "gui/$(id -u)" "$HOME/Library/LaunchAgents/com.f.obsidian-headless.sync.plist" 2>/dev/null || true
+    launchctl kickstart -k "gui/$(id -u)/com.f.obsidian-headless.sync"
+  }
+  obd-stop() { launchctl bootout "gui/$(id -u)/com.f.obsidian-headless.sync"; }
+  obd-reload() {
+    launchctl bootout "gui/$(id -u)/com.f.obsidian-headless.sync" 2>/dev/null || true
+    launchctl bootstrap "gui/$(id -u)" "$HOME/Library/LaunchAgents/com.f.obsidian-headless.sync.plist"
+    launchctl kickstart -k "gui/$(id -u)/com.f.obsidian-headless.sync"
+  }
+  obd-status() { launchctl print "gui/$(id -u)/com.f.obsidian-headless.sync"; }
+fi
 ob-log() { /usr/bin/tail -n 100 -f "$HOME/Library/Logs/obsidian-headless/sync.stdout.log"; }
 ob-err() { /usr/bin/tail -n 100 -f "$HOME/Library/Logs/obsidian-headless/sync.stderr.log"; }
 vault() { open "$OBSIDIAN_VAULT"; }

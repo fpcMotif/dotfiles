@@ -22,7 +22,21 @@ alias reload="source ~/.zshrc"
 alias down="cd ~/Downloads"
 alias dev="cd ~/Developer"
 alias doc="cd ~/Documents"
-alias ip="ipconfig getifaddr en0"
+if [[ "$OSTYPE" == darwin* ]]; then
+  alias ip="ipconfig getifaddr en0"
+else
+  alias ip="ip -4 addr show eth0 | grep -oP '(?<=inet\s)\d+(\.\d+){3}'"
+  if command -v xclip > /dev/null; then
+    alias pbcopy="xclip -selection clipboard"
+    alias pbpaste="xclip -selection clipboard -o"
+  elif command -v xsel > /dev/null; then
+    alias pbcopy="xsel --clipboard --input"
+    alias pbpaste="xsel --clipboard --output"
+  fi
+  if command -v xdg-open > /dev/null; then
+    alias open="xdg-open"
+  fi
+fi
 
 # ── 3. Git (Essential OMZ set) ───────────────────────────────────────────────
 alias g="git"
