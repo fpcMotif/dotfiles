@@ -40,20 +40,29 @@ oc-note() {
 }
 
 # ── Obsidian Headless Sync (launchd) ─────────────────────────────────────────
+OBS_PLIST="$HOME/Library/LaunchAgents/com.f.obsidian-headless.sync.plist"
+OBS_SVC="gui/$(id -u)/com.f.obsidian-headless.sync"
+
 obd-load() {
-  launchctl bootstrap "gui/$(id -u)" "$HOME/Library/LaunchAgents/com.f.obsidian-headless.sync.plist" 2>/dev/null || true
+  [[ -f "$OBS_PLIST" ]] || { echo "Error: plist not found" >&2; return 1; }
+  launchctl bootstrap "gui/$(id -u)" "$OBS_PLIST" || { echo "Error: load failed" >&2; return 1; }
 }
 obd-start() {
-  launchctl bootstrap "gui/$(id -u)" "$HOME/Library/LaunchAgents/com.f.obsidian-headless.sync.plist" 2>/dev/null || true
-  launchctl kickstart -k "gui/$(id -u)/com.f.obsidian-headless.sync"
+  [[ -f "$OBS_PLIST" ]] || { echo "Error: plist not found" >&2; return 1; }
+  launchctl bootstrap "gui/$(id -u)" "$OBS_PLIST" 2>/dev/null || true
+  launchctl kickstart -k "$OBS_SVC" || { echo "Error: start failed" >&2; return 1; }
 }
-obd-stop() { launchctl bootout "gui/$(id -u)/com.f.obsidian-headless.sync"; }
+obd-stop() {
+  launchctl print "$OBS_SVC" >/dev/null 2>&1 || { echo "Error: service not found" >&2; return 1; }
+  launchctl bootout "$OBS_SVC" || { echo "Error: stop failed" >&2; return 1; }
+}
 obd-reload() {
-  launchctl bootout "gui/$(id -u)/com.f.obsidian-headless.sync" 2>/dev/null || true
-  launchctl bootstrap "gui/$(id -u)" "$HOME/Library/LaunchAgents/com.f.obsidian-headless.sync.plist"
-  launchctl kickstart -k "gui/$(id -u)/com.f.obsidian-headless.sync"
+  [[ -f "$OBS_PLIST" ]] || { echo "Error: plist not found" >&2; return 1; }
+  launchctl bootout "$OBS_SVC" 2>/dev/null || true
+  launchctl bootstrap "gui/$(id -u)" "$OBS_PLIST" || { echo "Error: load failed" >&2; return 1; }
+  launchctl kickstart -k "$OBS_SVC" || { echo "Error: start failed" >&2; return 1; }
 }
-obd-status() { launchctl print "gui/$(id -u)/com.f.obsidian-headless.sync"; }
+obd-status() { launchctl print "$OBS_SVC"; }
 ob-log() { /usr/bin/tail -n 100 -f "$HOME/Library/Logs/obsidian-headless/sync.stdout.log"; }
 ob-err() { /usr/bin/tail -n 100 -f "$HOME/Library/Logs/obsidian-headless/sync.stderr.log"; }
 vault() { open "$OBSIDIAN_VAULT"; }

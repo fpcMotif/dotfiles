@@ -12,7 +12,8 @@ alias find='fd'
 alias du='dust'
 alias ps='procs'
 alias top='btm'
-function grep() { rg "$@" }
+# Intentional mask of grep to use standard grep with colors and prevent recursion
+function grep() { command grep --color=auto "$@" }
 
 # ── 2. Navigation ────────────────────────────────────────────────────────────
 alias ..="cd .."
