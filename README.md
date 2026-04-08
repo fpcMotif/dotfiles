@@ -35,9 +35,9 @@ cp ~/.config/zsh/.secret.example ~/.config/zsh/.secret
 │   ├── starship.toml              # Starship prompt (Nerd Font glyphs)
 │   └── ghostty/config             # Ghostty terminal
 ├── dot_claude/
-│   ├── claude.md                  # Global Claude Code guidelines
+│   ├── claude.md.tmpl             # Global Claude Code guidelines
 │   ├── RTK.md                     # RTK (Rust Token Killer) reference
-│   └── settings.json              # Plugins, hooks, permissions
+│   └── settings.json.tmpl         # Plugins, hooks, permissions
 ├── .chezmoiignore                 # Excludes secrets from apply
 └── CLAUDE.md                      # Claude Code guidance for this repo
 ```
