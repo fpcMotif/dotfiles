@@ -49,6 +49,10 @@ fi
 export TERMINFO="$HOME/.terminfo"
 export TERMINFO_DIRS="$HOME/.terminfo:/Applications/kitty.app/Contents/Resources/kitty/terminfo:/Applications/kitty.app/Contents/Resources/terminfo:/opt/zerobrew/prefix/opt/ncurses/share/terminfo:/usr/share/terminfo"
 
+if [[ -f /opt/homebrew/bin/brew || -f /usr/local/bin/brew ]]; then
+  export PATH="/opt/homebrew/bin:/usr/local/bin:$PATH"
+fi
+
 # Clean up
 unset __TREE_IGNORE
 unset __FD_COMMAND
