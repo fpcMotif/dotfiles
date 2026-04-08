@@ -53,32 +53,45 @@ _climode_get() {
   fi
 }
 
+_proxy_cmd() {
+  local tool="$1"
+  if [[ "$(_climode_get "$tool")" == "direct" ]]; then
+    if [[ "$tool" == "pi" ]]; then
+      ( _unset_ai_env; command "$@" )
+    else
+      command "$@"
+    fi
+  else
+    with-cliproxy "$@"
+  fi
+}
+
 opencode() {
   case "${1:-}" in
     auth) (_unset_ai_env; command opencode "$@") ;;
-    *) if [[ "$(_climode_get opencode)" == "direct" ]]; then command opencode "$@"; else with-cliproxy opencode "$@"; fi ;;
+    *) _proxy_cmd opencode "$@" ;;
   esac
 }
 
 amp() {
   case "${1:-}" in
     login|logout|whoami|auth) (_unset_ai_env; command amp "$@") ;;
-    *) if [[ "$(_climode_get amp)" == "direct" ]]; then command amp "$@"; else with-cliproxy amp "$@"; fi ;;
+    *) _proxy_cmd amp "$@" ;;
   esac
 }
 
-crush() { if [[ "$(_climode_get crush)" == "direct" ]]; then command crush "$@"; else with-cliproxy crush "$@"; fi }
+crush() { _proxy_cmd crush "$@" }
 
 droid() {
   case "${1:-}" in
     login|logout|whoami|auth) (_unset_ai_env; command droid "$@") ;;
-    *) if [[ "$(_climode_get droid)" == "direct" ]]; then command droid "$@"; else with-cliproxy droid "$@"; fi ;;
+    *) _proxy_cmd droid "$@" ;;
   esac
 }
 
 pi() {
   case "${1:-}" in
     login|logout|whoami|auth) (_unset_ai_env; command pi "$@") ;;
-    *) if [[ "$(_climode_get pi)" == "direct" ]]; then (_unset_ai_env; command pi "$@"); else with-cliproxy pi "$@"; fi ;;
+    *) _proxy_cmd pi "$@" ;;
   esac
 }

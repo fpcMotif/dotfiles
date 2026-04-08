@@ -1,11 +1,11 @@
 # 20-fzf.zsh — FZF configuration, keybindings, and helper functions
 
 # ── FZF Init ─────────────────────────────────────────────────────────────────
-[ -f ~/.fzf.zsh ] && source ~/.fzf.zsh
+_source_if_exists ~/.fzf.zsh
 _FZF_BREW_PREFIX=$(brew --prefix 2>/dev/null)
 if [[ -n "$_FZF_BREW_PREFIX" ]]; then
-  [ -f $_FZF_BREW_PREFIX/opt/fzf/shell/completion.zsh ] && source $_FZF_BREW_PREFIX/opt/fzf/shell/completion.zsh
-  [ -f $_FZF_BREW_PREFIX/opt/fzf/shell/key-bindings.zsh ] && source $_FZF_BREW_PREFIX/opt/fzf/shell/key-bindings.zsh
+  _source_if_exists "$_FZF_BREW_PREFIX/opt/fzf/shell/completion.zsh"
+  _source_if_exists "$_FZF_BREW_PREFIX/opt/fzf/shell/key-bindings.zsh"
 fi
 unset _FZF_BREW_PREFIX
 

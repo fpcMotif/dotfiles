@@ -19,4 +19,4 @@ zstyle ":completion:*" file-sort change
 zstyle ":completion:*" matcher-list "m:{[:lower:][:upper:]}={[:upper:][:lower:]}" "r:|=*" "l:|=* r:|=*"
 
 # Tabtab (pnpm)
-[[ -f $ZDOTDIR/tabtab/pnpm.zsh ]] && source $ZDOTDIR/tabtab/pnpm.zsh
+_source_if_exists "$ZDOTDIR/tabtab/pnpm.zsh"

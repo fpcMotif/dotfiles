@@ -12,17 +12,17 @@ ab() {
 
 # ── Bun ──────────────────────────────────────────────────────────────────────
 export BUN_INSTALL="$HOME/.bun"
-[ -s "$BUN_INSTALL/_bun" ] && source "$BUN_INSTALL/_bun"
-[ -s "$HOME/.bun/_bun" ] && source "$HOME/.bun/_bun"
+_source_if_exists "$BUN_INSTALL/_bun"
+_source_if_exists "$HOME/.bun/_bun"
 
 # ── GHCup (Haskell) ─────────────────────────────────────────────────────────
-[ -f "${GHCUP_INSTALL_BASE_PREFIX:=$HOME}/.ghcup/env" ] && source "${GHCUP_INSTALL_BASE_PREFIX:=$HOME}/.ghcup/env"
+_source_if_exists "${GHCUP_INSTALL_BASE_PREFIX:=$HOME}/.ghcup/env"
 
 # ── Kiro ─────────────────────────────────────────────────────────────────────
 [[ "$TERM_PROGRAM" == "kiro" ]] && . "$(kiro --locate-shell-integration-path zsh)"
 
 # ── Mole ─────────────────────────────────────────────────────────────────────
-(( $+commands[mole] )) && eval "$(mole completion zsh)"
+_has mole && eval "$(mole completion zsh)"
 
 # ── Ruby/Try ─────────────────────────────────────────────────────────────────
 [[ -f "$HOME/.local/try.rb" ]] && eval "$(ruby ~/.local/try.rb init ~/src/tries)"

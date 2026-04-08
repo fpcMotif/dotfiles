@@ -1,7 +1,7 @@
 # 99-late-init.zsh — Late tool init, local overrides, final startup tasks
 
 # ── Zoxide (must be last for cd override) ────────────────────────────────────
-if (( $+commands[zoxide] )); then
+if _has zoxide; then
   eval "$(zoxide init zsh --cmd z)"
 fi
 
@@ -12,11 +12,11 @@ fi
 
 # ── cmux Helpers ─────────────────────────────────────────────────────────────
 _CMUX_ZDOTDIR="${ZDOTDIR:-$HOME/.config/zsh}"
-[[ -r $_CMUX_ZDOTDIR/cmux.zsh ]] && source $_CMUX_ZDOTDIR/cmux.zsh
+_source_if_exists "$_CMUX_ZDOTDIR/cmux.zsh"
 unset _CMUX_ZDOTDIR
 
 # ── Consolidate Functions ────────────────────────────────────────────────────
-[[ -f $ZDOTDIR/function.zsh ]] && source $ZDOTDIR/function.zsh
+_source_if_exists "$ZDOTDIR/function.zsh"
 
 # ── Load Local Overrides (last, highest priority) ────────────────────────────
-[[ -r $HOME/.zshrc.local ]] && source $HOME/.zshrc.local
+_source_if_exists "$HOME/.zshrc.local"

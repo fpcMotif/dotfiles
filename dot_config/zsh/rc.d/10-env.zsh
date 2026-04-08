@@ -48,9 +48,9 @@ export PATH
 export CDPATH=".:$HOME:$HOME/Developer:$HOME/Downloads:$HOME/Documents"
 
 # ── Editor Setup ─────────────────────────────────────────────────────────────
-if (( $+commands[hx] )); then
+if _has hx; then
   export EDITOR=hx VISUAL=hx
-elif (( $+commands[nvim] )); then
+elif _has nvim; then
   export EDITOR=nvim VISUAL=nvim
 else
   export EDITOR=vi VISUAL=vi
