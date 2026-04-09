@@ -56,21 +56,6 @@ else
   export EDITOR=vi VISUAL=vi
 fi
 
-# ── Terminfo ─────────────────────────────────────────────────────────────────
-export TERMINFO="$HOME/.terminfo"
-typeset -aU _terminfo_dirs
-_terminfo_dirs=(
-  $HOME/.terminfo
-  /Applications/kitty.app/Contents/Resources/kitty/terminfo
-  /Applications/kitty.app/Contents/Resources/terminfo
-  /opt/zerobrew/prefix/opt/ncurses/share/terminfo
-  /usr/share/terminfo
-  ${(s/:/)TERMINFO_DIRS}
-)
-_terminfo_dirs=(${_terminfo_dirs:#})
-(( ${#_terminfo_dirs[@]} > 0 )) && export TERMINFO_DIRS="${(j/:/)_terminfo_dirs}"
-unset _terminfo_dirs
-
 alias sudo='sudo -E'
 
 # ── Build & SDK Flags ────────────────────────────────────────────────────────
