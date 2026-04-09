@@ -46,10 +46,18 @@ export CLIPROXY_BASE_URL="${CLIPROXY_BASE_URL:-http://127.0.0.1:8317}"
 export CLIPROXY_CONFIG="${CLIPROXY_CONFIG:-$HOME/CLIProxyAPI/config.yaml}"
 
 _climode_get() {
-  if [[ -f "$HOME/.config/climode.json" ]]; then
-    python3 -c "import json; print(json.load(open('$HOME/.config/climode.json')).get('$1','proxy'))" 2>/dev/null
+  local default_val="proxy"
+  local config_file="$HOME/.config/climode.json"
+  if [[ -f "$config_file" ]]; then
+    if _has jq; then
+      jq -r --arg k "$1" '.[$k] // "proxy"' "$config_file" 2>/dev/null || printf -- "%s\n" "$default_val"
+    elif _has python3; then
+      python3 -c "import json, sys; print(json.load(open(sys.argv[1])).get(sys.argv[2], 'proxy'))" "$config_file" "$1" 2>/dev/null || printf -- "%s\n" "$default_val"
+    else
+      printf -- "%s\n" "$default_val"
+    fi
   else
-    echo "proxy"
+    printf -- "%s\n" "$default_val"
   fi
 }
 
