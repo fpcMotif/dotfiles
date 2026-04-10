@@ -99,16 +99,23 @@ if [ -z "${SSL_CERT_DIR:-}" ]; then
   fi
 fi
 
-# Helper function to safely append to PATH
-_zb_path_append() {
+# Helper function to safely prepend to PATH
+_zb_path_prepend() {
     local argpath="$1"
+    [[ -z "$argpath" ]] && return
     case ":${PATH}:" in
         *:"$argpath":*) ;;
-        *) export PATH="$argpath:$PATH" ;;
-    esac;
+        *)
+            if [[ -z "$PATH" ]]; then
+                export PATH="$argpath"
+            else
+                export PATH="$argpath:$PATH"
+            fi
+            ;;
+    esac
 }
 
-_zb_path_append "$ZEROBREW_BIN"
-_zb_path_append "$ZEROBREW_PREFIX/bin"
+_zb_path_prepend "$ZEROBREW_BIN"
+_zb_path_prepend "$ZEROBREW_PREFIX/bin"
 
 # <<< zerobrew <<<
