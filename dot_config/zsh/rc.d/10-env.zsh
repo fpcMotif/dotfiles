@@ -16,32 +16,26 @@ typeset -U path PATH
 path=(
   $HOME/.local/bin
   /opt/zerobrew/prefix/bin
-  /opt/zerobrew/prefix/sbin
+  /opt/nanobrew/prefix/bin
   /opt/homebrew/bin
   /usr/local/bin
-  /usr/local/opt/python@3.13/bin
-  /usr/local/opt/yt-dlp/bin
   $HOME/bin
   $HOME/.bun/bin
   $HOME/.ghcup/bin
-  $HOME/.lmstudio/bin
-  $HOME/.spicetify
-  $HOME/Library/TinyTeX/bin/universal-darwin
   $HOME/.elixir-install/installs/otp/27.3.4/bin
   $HOME/.elixir-install/installs/elixir/1.18.4-otp-27/bin
-  $HOME/.composer/vendor/bin
   $HOME/.cargo/bin
   $HOME/go/bin
-  $HOME/Desktop/yazi/target/release
   $HOME/.opencode/bin
   $HOME/.codeium/windsurf/bin
   $HOME/.antigravity/antigravity/bin
   $HOME/.amp/bin
-  $HOME/.local/quarto/bin
   $HOME/.fabro/bin
   /Applications/Obsidian.app/Contents/MacOS
   $path
 )
+# Strip non-existent dirs — avoids wasted lookups on 16GB M1
+path=(${^path}(N-/))
 export PATH
 
 # ── CDPATH (jump to common dirs without full path) ────────────────────────────
@@ -73,13 +67,22 @@ unset _terminfo_dirs
 
 alias sudo='sudo -E'
 
-# ── Build & SDK Flags ────────────────────────────────────────────────────────
-export PKG_CONFIG_PATH="/opt/homebrew/lib/pkgconfig:/opt/homebrew/opt/tcl-tk/lib/pkgconfig:$PKG_CONFIG_PATH"
-export LDFLAGS="-L/opt/homebrew/lib -L/opt/homebrew/opt/tcl-tk/lib"
-export CPPFLAGS="-I/opt/homebrew/include -I/opt/homebrew/opt/tcl-tk/include"
-export CFLAGS="-I/opt/homebrew/opt/tcl-tk/include"
-export PYTHON_CONFIGURE_OPTS="--with-tcltk-includes='-I/opt/homebrew/opt/tcl-tk/include' --with-tcltk-libs='-L/opt/homebrew/opt/tcl-tk/lib -ltcl8.6 -ltk8.6'"
-export SDKROOT="$(xcrun --show-sdk-path 2>/dev/null)"
+# ── Build & SDK Flags (auto-detect active brew prefix) ───────────────────────
+_brew_prefix=""
+for _bp in /opt/zerobrew/prefix /opt/homebrew /opt/nanobrew/prefix; do
+  [[ -d "$_bp/lib" ]] && { _brew_prefix="$_bp"; break; }
+done
+if [[ -n "$_brew_prefix" ]]; then
+  export PKG_CONFIG_PATH="$_brew_prefix/lib/pkgconfig:$_brew_prefix/opt/tcl-tk/lib/pkgconfig:$PKG_CONFIG_PATH"
+  export LDFLAGS="-L$_brew_prefix/lib -L$_brew_prefix/opt/tcl-tk/lib"
+  export CPPFLAGS="-I$_brew_prefix/include -I$_brew_prefix/opt/tcl-tk/include"
+  export CFLAGS="-I$_brew_prefix/opt/tcl-tk/include"
+  export PYTHON_CONFIGURE_OPTS="--with-tcltk-includes='-I$_brew_prefix/opt/tcl-tk/include' --with-tcltk-libs='-L$_brew_prefix/opt/tcl-tk/lib -ltcl8.6 -ltk8.6'"
+fi
+unset _brew_prefix _bp
+if [[ -z "$SDKROOT" ]]; then
+  export SDKROOT="$(xcrun --show-sdk-path 2>/dev/null)"
+fi
 [[ -n "$SDKROOT" ]] && {
   export CFLAGS="-isysroot $SDKROOT $CFLAGS"
   export CPPFLAGS="-isysroot $SDKROOT $CPPFLAGS"

@@ -17,7 +17,7 @@ confirm-close-surface = false
 cursor-style = block
 
 # ── Scrollback ───────────────────────────────────────────────────────────────
-scrollback-limit = 25000000
+scrollback-limit = 500000
 
 # ── Quick Terminal (dropdown from top) ───────────────────────────────────────
 quick-terminal-position = top

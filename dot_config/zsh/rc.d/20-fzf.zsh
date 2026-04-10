@@ -2,12 +2,15 @@
 
 # ── FZF Init ─────────────────────────────────────────────────────────────────
 [ -f ~/.fzf.zsh ] && source ~/.fzf.zsh
-_FZF_BREW_PREFIX=$(brew --prefix 2>/dev/null)
-if [[ -n "$_FZF_BREW_PREFIX" ]]; then
-  [ -f $_FZF_BREW_PREFIX/opt/fzf/shell/completion.zsh ] && source $_FZF_BREW_PREFIX/opt/fzf/shell/completion.zsh
-  [ -f $_FZF_BREW_PREFIX/opt/fzf/shell/key-bindings.zsh ] && source $_FZF_BREW_PREFIX/opt/fzf/shell/key-bindings.zsh
-fi
-unset _FZF_BREW_PREFIX
+# Try known brew prefixes (zerobrew > homebrew > nanobrew) — no subprocess needed
+for _fzf_prefix in /opt/zerobrew/prefix /opt/homebrew /opt/nanobrew/prefix; do
+  if [[ -d "$_fzf_prefix/opt/fzf/shell" ]]; then
+    source "$_fzf_prefix/opt/fzf/shell/completion.zsh" 2>/dev/null
+    source "$_fzf_prefix/opt/fzf/shell/key-bindings.zsh" 2>/dev/null
+    break
+  fi
+done
+unset _fzf_prefix
 
 # ── Default Options (Nerd Font + modern palette) ─────────────────────────────
 export FZF_DEFAULT_COMMAND='fd --type f --hidden --follow --exclude .git'

@@ -3,8 +3,8 @@
 "$schema" = 'https://starship.rs/config-schema.json'
 
 add_newline = true
-scan_timeout = 100
-command_timeout = 2000
+scan_timeout = 50
+command_timeout = 1000
 follow_symlinks = false
 
 format = """
@@ -88,21 +88,27 @@ style = "bold purple"
 
 [swift]
 symbol = " "
+disabled = true
 
 [java]
 symbol = " "
+disabled = true
 
 [kotlin]
 symbol = " "
+disabled = true
 
 [lua]
 symbol = " "
+disabled = true
 
 [ruby]
 symbol = " "
+disabled = true
 
 [package]
 symbol = "󰏗 "
+disabled = true
 
 [aws]
 symbol = " "
@@ -117,10 +123,10 @@ disabled = true
 
 [kubernetes]
 disabled = true
-command_timeout = 1500
 
 [memory_usage]
 symbol = "󰍛 "
+disabled = true
 
 [hostname]
 ssh_symbol = " "
