@@ -22,7 +22,7 @@ jot() {
   local msg="$*"
   local daily_path
   daily_path="$(notesmd-cli daily --print-path)" || return 1
-  echo "- $msg" >> "$daily_path" && echo "Noted to $daily_path"
+  printf -- '- %s\n' "$msg" >> "$daily_path" && echo "Noted to $daily_path"
 }
 
 # ── OpenCode Vault Shortcuts ─────────────────────────────────────────────────
