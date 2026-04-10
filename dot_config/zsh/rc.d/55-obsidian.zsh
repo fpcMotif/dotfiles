@@ -40,20 +40,25 @@ oc-note() {
 }
 
 # ── Obsidian Headless Sync (launchd) ─────────────────────────────────────────
+_obd_label="com.f.obsidian-headless.sync"
+_obd_domain="gui/$(id -u)"
+_obd_plist="$HOME/Library/LaunchAgents/${_obd_label}.plist"
+_obd_target="${_obd_domain}/${_obd_label}"
+
 obd-load() {
-  launchctl bootstrap "gui/$(id -u)" "$HOME/Library/LaunchAgents/com.f.obsidian-headless.sync.plist" 2>/dev/null || true
+  launchctl bootstrap "$_obd_domain" "$_obd_plist" 2>/dev/null || true
 }
 obd-start() {
-  launchctl bootstrap "gui/$(id -u)" "$HOME/Library/LaunchAgents/com.f.obsidian-headless.sync.plist" 2>/dev/null || true
-  launchctl kickstart -k "gui/$(id -u)/com.f.obsidian-headless.sync"
+  launchctl bootstrap "$_obd_domain" "$_obd_plist" 2>/dev/null || true
+  launchctl kickstart -k "$_obd_target"
 }
-obd-stop() { launchctl bootout "gui/$(id -u)/com.f.obsidian-headless.sync"; }
+obd-stop() { launchctl bootout "$_obd_target"; }
 obd-reload() {
-  launchctl bootout "gui/$(id -u)/com.f.obsidian-headless.sync" 2>/dev/null || true
-  launchctl bootstrap "gui/$(id -u)" "$HOME/Library/LaunchAgents/com.f.obsidian-headless.sync.plist"
-  launchctl kickstart -k "gui/$(id -u)/com.f.obsidian-headless.sync"
+  launchctl bootout "$_obd_target" 2>/dev/null || true
+  launchctl bootstrap "$_obd_domain" "$_obd_plist"
+  launchctl kickstart -k "$_obd_target"
 }
-obd-status() { launchctl print "gui/$(id -u)/com.f.obsidian-headless.sync"; }
+obd-status() { launchctl print "$_obd_target"; }
 ob-log() { /usr/bin/tail -n 100 -f "$HOME/Library/Logs/obsidian-headless/sync.stdout.log"; }
 ob-err() { /usr/bin/tail -n 100 -f "$HOME/Library/Logs/obsidian-headless/sync.stderr.log"; }
 vault() { open "$OBSIDIAN_VAULT"; }
