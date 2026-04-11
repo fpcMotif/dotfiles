@@ -4,7 +4,6 @@
 # ── Plugin Manager (sheldon) ────────────────────────────────────────────────
 eval "$(sheldon source)"
 
-setopt HIST_IGNORE_ALL_DUPS
 bindkey -e
 WORDCHARS=${WORDCHARS//[\/]}
 

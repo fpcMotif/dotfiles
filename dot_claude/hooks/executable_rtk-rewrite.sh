@@ -31,7 +31,7 @@ if [ -n "$RTK_VERSION" ]; then
 fi
 
 INPUT=$(cat)
-CMD=$(echo "$INPUT" | jq -r '.tool_input.command // empty')
+CMD=$(printf '%s' "$INPUT" | jq -r '.tool_input.command // empty')
 
 if [ -z "$CMD" ]; then
   exit 0
@@ -46,8 +46,8 @@ if [ "$CMD" = "$REWRITTEN" ]; then
   exit 0
 fi
 
-ORIGINAL_INPUT=$(echo "$INPUT" | jq -c '.tool_input')
-UPDATED_INPUT=$(echo "$ORIGINAL_INPUT" | jq --arg cmd "$REWRITTEN" '.command = $cmd')
+ORIGINAL_INPUT=$(printf '%s' "$INPUT" | jq -c '.tool_input')
+UPDATED_INPUT=$(printf '%s' "$ORIGINAL_INPUT" | jq --arg cmd "$REWRITTEN" '.command = $cmd')
 
 jq -n \
   --argjson updated "$UPDATED_INPUT" \

@@ -44,7 +44,7 @@ obd-load() {
   launchctl bootstrap "gui/$(id -u)" "$HOME/Library/LaunchAgents/com.f.obsidian-headless.sync.plist" 2>/dev/null || true
 }
 obd-start() {
-  launchctl bootstrap "gui/$(id -u)" "$HOME/Library/LaunchAgents/com.f.obsidian-headless.sync.plist" 2>/dev/null || true
+  obd-load
   launchctl kickstart -k "gui/$(id -u)/com.f.obsidian-headless.sync"
 }
 obd-stop() { launchctl bootout "gui/$(id -u)/com.f.obsidian-headless.sync"; }

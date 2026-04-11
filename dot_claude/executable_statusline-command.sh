@@ -20,15 +20,10 @@ IFS=$'\t' read -r model cwd used_pct total_in total_out cost_raw < <(
 # ANSI colors
 reset='\033[0m'
 dim='\033[2m'
-cyan='\033[36m'
 green='\033[32m'
 yellow='\033[33m'
 red='\033[31m'
-blue='\033[34m'
 magenta='\033[35m'
-
-# Shorten $HOME to ~
-short_cwd="${cwd/#$HOME/~}"
 
 # Context progress bar (pure bash, no seq/bc)
 full="██████████"
@@ -63,8 +58,8 @@ fi
 # Git branch
 git_branch=""
 if [[ -n "$cwd" ]] && git_out=$(git -C "$cwd" rev-parse --abbrev-ref HEAD 2>/dev/null); then
-  git_branch=" ${dim}|${reset} ${magenta}${git_out}${reset}"
+  git_branch="${magenta}${git_out}${reset}"
 fi
 
 # Output — %b interprets \033 escapes; user data is in the argument, not format string
-printf '%b\n' "${cyan}${model}${reset}  ${blue}${short_cwd}${reset}${git_branch}  ${bar}${cost}"
+printf '%b\n' "${git_branch}  ${bar}${cost}"

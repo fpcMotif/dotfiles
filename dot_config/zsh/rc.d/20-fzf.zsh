@@ -32,9 +32,10 @@ export FZF_ALT_C_OPTS="--preview 'eza --tree --level=2 --icons --color=always {}
 # Find in files — interactive content search
 fif() {
   (( $# )) || return
-  rg --files-with-matches --no-messages "$1" | fzf \
-    --prompt='󰈞 ' \
-    --preview "rg --ignore-case --pretty --context 10 '$1' {}"
+  rg --files-with-matches --no-messages -- "$1" | \
+    FIF_QUERY="$1" fzf \
+      --prompt='󰈞 ' \
+      --preview 'rg --ignore-case --pretty --context 10 -- "$FIF_QUERY" {}'
 }
 
 # Interactive git branch switching with commit preview

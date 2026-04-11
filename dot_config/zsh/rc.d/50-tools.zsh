@@ -13,7 +13,6 @@ ab() {
 # ── Bun ──────────────────────────────────────────────────────────────────────
 export BUN_INSTALL="$HOME/.bun"
 [ -s "$BUN_INSTALL/_bun" ] && source "$BUN_INSTALL/_bun"
-[ -s "$HOME/.bun/_bun" ] && source "$HOME/.bun/_bun"
 
 # ── GHCup (Haskell) ─────────────────────────────────────────────────────────
 [ -f "${GHCUP_INSTALL_BASE_PREFIX:=$HOME}/.ghcup/env" ] && source "${GHCUP_INSTALL_BASE_PREFIX:=$HOME}/.ghcup/env"

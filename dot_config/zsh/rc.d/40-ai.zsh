@@ -27,12 +27,7 @@ function claude() {
   )
 }
 
-cc() {
-  (
-    _unset_ai_env
-    "$HOME/.local/bin/claude" --dangerously-skip-permissions "$@"
-  )
-}
+cc() { cofficial "$@" }
 
 # ── Other AI CLI Wrappers ────────────────────────────────────────────────────
 alias gy='gemini -y'
