@@ -1,30 +1,69 @@
-# Ghostty Configuration
+# Ghostty Configuration — optimized for TUI/Neovim dev workflow
 
 # ── Font ─────────────────────────────────────────────────────────────────────
 font-family = "Maple Mono NF CN"
 font-size = 14
+font-thicken = true
+adjust-cell-height = 15%
 
 # ── Theme (auto light/dark matching macOS) ───────────────────────────────────
 theme = light:Apple System Colors Light,dark:Cursor Dark
+minimum-contrast = 1.1
+bold-is-bright = false
 
 # ── Window ───────────────────────────────────────────────────────────────────
 macos-titlebar-style = transparent
+macos-option-as-alt = true
 window-save-state = always
+window-padding-x = 4
+window-padding-y = 4
+window-padding-balance = true
 quit-after-last-window-closed = true
 confirm-close-surface = false
 
 # ── Cursor ───────────────────────────────────────────────────────────────────
 cursor-style = block
+cursor-style-blink = false
+mouse-hide-while-typing = true
+
+# ── Clipboard & Selection ────────────────────────────────────────────────────
+clipboard-read = allow
+clipboard-write = allow
+copy-on-select = clipboard
 
 # ── Scrollback ───────────────────────────────────────────────────────────────
 scrollback-limit = 500000
+
+# ── Shell Integration ────────────────────────────────────────────────────────
+shell-integration = zsh
+shell-integration-features = cursor,sudo,title
 
 # ── Quick Terminal (dropdown from top) ───────────────────────────────────────
 quick-terminal-position = top
 quick-terminal-animation-duration = 0.15
 
 # ── Keybindings ──────────────────────────────────────────────────────────────
+# Splits — create
 keybind = cmd+d=new_split:right
 keybind = cmd+shift+d=new_split:down
 keybind = cmd+shift+f=toggle_split_zoom
 keybind = cmd+shift+enter=toggle_fullscreen
+
+# Splits — navigate (cmd+opt+arrow avoids Neovim conflicts)
+keybind = cmd+alt+left=goto_split:left
+keybind = cmd+alt+right=goto_split:right
+keybind = cmd+alt+up=goto_split:top
+keybind = cmd+alt+down=goto_split:bottom
+
+# Splits — resize
+keybind = cmd+ctrl+left=resize_split:left,20
+keybind = cmd+ctrl+right=resize_split:right,20
+keybind = cmd+ctrl+up=resize_split:up,20
+keybind = cmd+ctrl+down=resize_split:down,20
+
+# Splits — equalize
+keybind = cmd+shift+0=equalize_splits
+
+# Tabs
+keybind = cmd+shift+left=previous_tab
+keybind = cmd+shift+right=next_tab

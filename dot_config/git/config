@@ -1,0 +1,81 @@
+# ~/.config/git/config — global git configuration
+
+[user]
+	name = fpcmotif
+	email = fpcmotif@gmail.com
+
+[init]
+	defaultBranch = main
+
+[core]
+	pager = delta
+	editor = nvim
+	autocrlf = input
+	ignorecase = false
+
+[interactive]
+	diffFilter = delta --color-only
+
+[delta]
+	navigate = true
+	side-by-side = true
+	line-numbers = true
+	hyperlinks = true
+	syntax-theme = ansi
+
+[delta "decorations"]
+	file-style = bold yellow ul
+	file-decoration-style = none
+	hunk-header-decoration-style = cyan box ul
+
+[merge]
+	conflictstyle = zdiff3
+
+[diff]
+	algorithm = histogram
+	colorMoved = default
+	renames = copies
+
+[push]
+	default = current
+	autoSetupRemote = true
+	followTags = true
+
+[pull]
+	rebase = true
+
+[fetch]
+	prune = true
+	pruneTags = true
+
+[rebase]
+	autoStash = true
+	autoSquash = true
+
+[rerere]
+	enabled = true
+
+[branch]
+	sort = -committerdate
+
+[tag]
+	sort = -version:refname
+
+[column]
+	ui = auto
+
+[color]
+	ui = true
+
+[color "status"]
+	added = green bold
+	changed = yellow bold
+	untracked = red bold
+
+[color "branch"]
+	current = green bold
+	local = yellow
+	remote = cyan
+
+[url "git@github.com:"]
+	insteadOf = gh:
