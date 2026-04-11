@@ -1,0 +1,17 @@
+{
+  "colors": {
+    "pi": "#36f9f6",
+    "model": "#ff7edb",
+    "path": "#36f9f6",
+    "gitDirty": "#ff8b39",
+    "gitClean": "#72f1b8",
+    "thinking": "#c792ea",
+    "context": "#fede5d",
+    "contextWarn": "#ff8b39",
+    "contextError": "#fe4450",
+    "cost": "#fede5d",
+    "tokens": "#c792ea",
+    "separator": "#463465",
+    "border": "#ff7edb"
+  }
+}

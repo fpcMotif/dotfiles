@@ -1,0 +1,16 @@
+{
+  "settings": {
+    "idleTimeout": 300
+  },
+  "mcpServers": {
+    "deepwiki": {
+      "url": "https://mcp.deepwiki.com/mcp",
+      "lifecycle": "lazy",
+      "directTools": [
+        "read_wiki_structure",
+        "read_wiki_contents",
+        "ask_question"
+      ]
+    }
+  }
+}

@@ -1,0 +1,52 @@
+{
+  "lastChangelogVersion": "0.63.2",
+  "defaultProvider": "openai-codex",
+  "defaultModel": "gpt-5.4",
+  "defaultThinkingLevel": "xhigh",
+  "shellCommandPrefix": "export PATH='/usr/bin:/bin:/usr/sbin:/sbin:$HOME/.local/bin:$HOME/.bun/bin:/opt/zerobrew/prefix/bin:$PATH'; eval \"$(zoxide init bash --cmd cd)\"",
+  "npmCommand": [
+    "{{ .chezmoi.homeDir }}/.local/bin/pi-npm-bun"
+  ],
+  "theme": "synthwave",
+  "powerline": "nerd",
+  "workingVibe": "synthwave",
+  "workingVibeMode": "file",
+  "modelProfiles": [
+    {
+      "model": "openai/gpt-5.4",
+      "thinking": "xhigh",
+      "label": "GPT-5.4 Deep"
+    },
+    {
+      "model": "anthropic/claude-opus-4.6",
+      "thinking": "xhigh",
+      "label": "Opus Deep"
+    },
+    {
+      "model": "anthropic/claude-sonnet-4.6",
+      "thinking": "medium",
+      "label": "Sonnet Fast"
+    },
+    {
+      "model": "google/gemini-3-pro",
+      "thinking": "high",
+      "label": "Gemini Pro"
+    }
+  ],
+  "packages": [
+    "https://github.com/emilkowalski/skill",
+    "npm:pi-design-deck",
+    "npm:pi-subagents",
+    "npm:pi-mcp-adapter",
+    "npm:glimpseui",
+    "git:github.com/HazAT/pi-parallel",
+    "npm:pi-web-access",
+    "npm:mitsupi",
+    "npm:pi-extmgr",
+    "npm:toenobu-agent",
+    "npm:@benvargas/pi-synthetic-provider",
+    "npm:pi-upgrade",
+    "npm:pi-powerline-footer",
+    "npm:@oh-my-pi/basics"
+  ]
+}

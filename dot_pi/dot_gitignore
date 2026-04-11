@@ -1,0 +1,13 @@
+# Secrets
+agent/auth.json
+auth.json
+
+# Session History & Logs
+agent/sessions/
+sessions/
+agent/cache/
+cache/
+*.log
+
+# Temp files
+.DS_Store
