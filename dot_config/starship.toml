@@ -3,12 +3,12 @@
 "$schema" = 'https://starship.rs/config-schema.json'
 
 add_newline = true
-scan_timeout = 50
+scan_timeout = 100
 command_timeout = 1000
-follow_symlinks = false
+follow_symlinks = true
 
 format = """
-$directory$git_branch$git_status$nodejs$python$rust$golang$elixir$docker_context$line_break$character
+$directory$git_branch$git_status$git_metrics$nodejs$python$rust$golang$elixir$docker_context$line_break$character
 """
 right_format = "$cmd_duration$time"
 
@@ -40,6 +40,12 @@ modified = " "
 staged = " "
 deleted = " "
 untracked = " "
+
+[git_metrics]
+disabled = false
+added_style = "bold green"
+deleted_style = "bold red"
+format = '([+$added]($added_style) )([-$deleted]($deleted_style) )'
 
 [git_commit]
 tag_symbol = '  '
