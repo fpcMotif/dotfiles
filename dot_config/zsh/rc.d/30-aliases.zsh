@@ -1,11 +1,11 @@
 # 30-aliases.zsh — System aliases, modern tool replacements, git shortcuts
 
 # ── 1. Modern Tool Replacements ──────────────────────────────────────────────
-alias ls='eza --icons --git --group-directories-first'
-alias ll='eza -lh --icons --git --group-directories-first'
-alias la='eza -la --icons --git --group-directories-first'
-alias lt='eza -lT --level=2 --icons'
-alias tree='eza --tree --icons --git-ignore'
+alias ls='eza --icons --git --group-directories-first --hyperlink --no-quotes'
+alias ll='eza -lh --icons --git --group-directories-first --hyperlink --no-quotes --color-scale=size --color-scale-mode=gradient --smart-group'
+alias la='eza -la --icons --git --group-directories-first --hyperlink --no-quotes --color-scale=size --color-scale-mode=gradient --smart-group'
+alias lt='eza -lT --level=2 --icons --hyperlink --no-quotes'
+alias tree='eza --tree --icons --git-ignore --hyperlink --no-quotes'
 alias cat='bat --paging=never'
 alias preview='bat --style=numbers --color=always'
 alias find='fd'

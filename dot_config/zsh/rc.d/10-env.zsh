@@ -75,6 +75,7 @@ fi
 
 # ── Theme Settings ───────────────────────────────────────────────────────────
 export BAT_THEME="Catppuccin-macchiato"
+export EZA_CONFIG_DIR="$HOME/.config/eza"
 export HOMEBREW_NO_ANALYTICS=1
 export RANGER_LOAD_DEFAULT_RC="FALSE"
 export PNPM_HOME=$HOME/Library/pnpm

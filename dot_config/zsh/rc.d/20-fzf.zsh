@@ -25,7 +25,7 @@ export FZF_CTRL_T_OPTS="--preview 'bat --style=numbers --color=always --line-ran
 
 # ── ALT-C: Directory search with eza tree preview ────────────────────────────
 export FZF_ALT_C_COMMAND='fd --type d --hidden --exclude .git --color=always'
-export FZF_ALT_C_OPTS="--preview 'eza --tree --level=2 --icons --color=always {}'"
+export FZF_ALT_C_OPTS="--preview 'eza --tree --level=2 --icons --color=always --no-quotes {}'"
 
 # ── Helper Functions ─────────────────────────────────────────────────────────
 
