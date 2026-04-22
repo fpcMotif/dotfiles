@@ -1,21 +1,18 @@
 import { spawnSync } from "node:child_process";
 import type { ExtensionAPI } from "@mariozechner/pi-coding-agent";
 
-function isLazygitCommand(command: string): boolean {
-	const trimmed = command.trim();
-	return (
-		trimmed === "lazygit" ||
-		trimmed.startsWith("lazygit ") ||
-		trimmed === "lg" ||
-		trimmed.startsWith("lg ")
-	);
+const LAZYGIT_RE = /^(?:lazygit|lg)(?:\s+(.*))?$/;
+
+export function isLazygitCommand(command: string): boolean {
+	return LAZYGIT_RE.test(command.trim());
 }
 
-function normalizeCommand(command: string): string {
+export function normalizeCommand(command: string): string {
 	const trimmed = command.trim();
-	if (trimmed === "lg") return "lazygit";
-	if (trimmed.startsWith("lg ")) return `lazygit ${trimmed.slice(3)}`;
-	return trimmed;
+	const match = trimmed.match(LAZYGIT_RE);
+	if (!match) return trimmed;
+	const args = match[1];
+	return args ? `lazygit ${args}` : "lazygit";
 }
 
 export default function lazygitShell(pi: ExtensionAPI) {
