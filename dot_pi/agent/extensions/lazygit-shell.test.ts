@@ -7,8 +7,10 @@ describe("lazygit-shell helpers", () => {
 		expect(isLazygitCommand("lazygit ")).toBe(true);
 		expect(isLazygitCommand("  lazygit  ")).toBe(true);
 		expect(isLazygitCommand("lazygit status")).toBe(true);
+		expect(isLazygitCommand("lazygit\tstatus")).toBe(true);
 		expect(isLazygitCommand("lg")).toBe(true);
 		expect(isLazygitCommand("lg status")).toBe(true);
+		expect(isLazygitCommand("")).toBe(false);
 		expect(isLazygitCommand("l")).toBe(false);
 		expect(isLazygitCommand("git")).toBe(false);
 		expect(isLazygitCommand("lazygitstatus")).toBe(false);

@@ -11,7 +11,8 @@ export function normalizeCommand(command: string): string {
 	const trimmed = command.trim();
 	const match = trimmed.match(LAZYGIT_RE);
 	if (!match) return trimmed;
-	return `lazygit ${match[1] || ""}`.trim();
+	const args = match[1];
+	return args ? `lazygit ${args}` : "lazygit";
 }
 
 export default function lazygitShell(pi: ExtensionAPI) {
