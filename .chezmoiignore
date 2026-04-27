@@ -70,3 +70,7 @@ LICENSE
 .pi/todos
 .pi/pi-acp
 .pi/.DS_Store
+
+# Optional per-host overlays
+.config/zsh/rc.d/90-host.zsh
+.config/zsh/rc.d/91-local.zsh

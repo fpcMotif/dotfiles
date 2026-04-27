@@ -27,7 +27,7 @@ cp ~/.config/zsh/.secret.example ~/.config/zsh/.secret
 ├── dot_zprofile                   # ~/.zprofile (PATH setup)
 ├── dot_config/
 │   ├── zsh/
-│   │   ├── dot_zshrc              # Entry point: secrets -> rc.d/ -> overrides
+│   │   ├── dot_zshrc              # Entry point: secrets -> core rc.d/ -> host/local overlays
 │   │   ├── dot_zshenv             # Universal env vars
 │   │   ├── dot_secret.example     # Template for API keys
 │   │   └── rc.d/                  # Modular numbered configs (00-99)
@@ -73,6 +73,49 @@ chezmoi diff         # Preview changes
 chezmoi edit ~/.zshrc  # Edit managed file
 chezmoi add ~/.some-config  # Track a new file
 ```
+
+
+## Host/Local Override Pattern
+
+Core modules in `~/.config/zsh/rc.d/*.zsh` are intended to stay generic and deterministic in-repo.
+Machine-specific behavior is layered via **optional, untracked overlays** loaded at the end of startup:
+
+- `~/.config/zsh/rc.d/90-host.zsh` (per-machine, shared by that host)
+- `~/.config/zsh/rc.d/91-local.zsh` (personal scratch/local tweaks)
+
+Both paths are ignored by default in this repo (`.gitignore` + `.chezmoiignore`).
+
+### Example: macOS laptop (`90-host.zsh`)
+
+```zsh
+# OrbStack integration
+source ~/.orbstack/shell/init.zsh 2>/dev/null || :
+
+# Obsidian CLI path
+export PATH="$PATH:/Applications/Obsidian.app/Contents/MacOS"
+
+# Canary + agent-browser debug helpers
+export AGENT_BROWSER_CDP_URL="http://localhost:9222"
+alias canary-start='~/.local/bin/canary-debug'
+ab() {
+  if ! curl -s "http://localhost:9222/json/version" > /dev/null 2>&1; then
+    ~/.local/bin/canary-debug > /dev/null 2>&1
+  fi
+  agent-browser "$@"
+}
+```
+
+### Example: Nix-managed workstation (`90-host.zsh`)
+
+```zsh
+# Prefer Nix profiles and avoid host-specific app PATH injections
+[[ -d /nix/var/nix/profiles/default/bin ]] && export PATH="/nix/var/nix/profiles/default/bin:$PATH"
+[[ -d "$HOME/.nix-profile/bin" ]] && export PATH="$HOME/.nix-profile/bin:$PATH"
+
+# Keep machine-local secrets or experiments in 91-local.zsh
+```
+
+Tip: Keep `00-89` and shared `9x` modules portable; use `90/91` only for non-portable host logic.
 
 ## Credits
 

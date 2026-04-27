@@ -1,13 +1,21 @@
 # ~/.config/zsh/.zshrc — Modular Zsh Configuration
-# Architecture: secrets -> rc.d/ modules (00-99) -> local overrides
+# Architecture: secrets -> rc.d/ core modules (00-99) -> optional host/local overlays
 
 # 1. Load secret environment variables (API keys, tokens)
 [[ -f "$ZDOTDIR/.secret" ]] && source "$ZDOTDIR/.secret"
 
-# 2. Load modular configurations (numbered for deterministic order)
+# 2. Load modular core configurations (numbered for deterministic order)
 if [[ -d "$ZDOTDIR/rc.d" ]]; then
   for conf in "$ZDOTDIR/rc.d/"*.zsh(N); do
+    case "${conf:t}" in
+      90-host.zsh|91-local.zsh) continue ;;
+    esac
     source "$conf"
   done
+
+  # 3. Optional overlays (machine-specific / unmanaged locally)
+  [[ -f "$ZDOTDIR/rc.d/90-host.zsh" ]] && source "$ZDOTDIR/rc.d/90-host.zsh"
+  [[ -f "$ZDOTDIR/rc.d/91-local.zsh" ]] && source "$ZDOTDIR/rc.d/91-local.zsh"
+
   unset conf
 fi

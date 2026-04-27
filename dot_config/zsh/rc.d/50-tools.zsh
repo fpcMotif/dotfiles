@@ -1,14 +1,7 @@
-# 50-tools.zsh — Agent Browser, Bun, GHCup, Kiro, Mole, Ruby/Try integrations
+# 50-tools.zsh — Bun, GHCup, Kiro, Mole, Ruby/Try integrations
 
-# ── Chrome Canary & agent-browser ────────────────────────────────────────────
-export AGENT_BROWSER_CDP_URL="http://localhost:9222"
-alias canary-start='~/.local/bin/canary-debug'
-ab() {
-    if ! curl -s "http://localhost:9222/json/version" > /dev/null 2>&1; then
-        ~/.local/bin/canary-debug > /dev/null 2>&1
-    fi
-    agent-browser "$@"
-}
+# Machine-specific debug/browser aliases belong in 90-host.zsh or 91-local.zsh.
+# Example: AGENT_BROWSER_CDP_URL, canary-start, and ab() wrapper.
 
 # ── Bun ──────────────────────────────────────────────────────────────────────
 export BUN_INSTALL="$HOME/.bun"

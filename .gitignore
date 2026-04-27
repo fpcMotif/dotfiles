@@ -13,3 +13,7 @@
 .zsh_history
 .zsh_sessions/
 .history
+
+# Optional per-host overlays (keep untracked by default)
+dot_config/zsh/rc.d/90-host.zsh
+dot_config/zsh/rc.d/91-local.zsh
