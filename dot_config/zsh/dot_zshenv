@@ -24,6 +24,12 @@ export HOMEBREW_NO_ANALYTICS=1
 export RANGER_LOAD_DEFAULT_RC="FALSE"
 export PNPM_HOME=$HOME/Library/pnpm
 
+# Package manager / toolchain selection
+# Values: auto (default), nix, brew, hybrid
+export DOTFILES_PKG_STACK="${DOTFILES_PKG_STACK:-auto}"
+# Values: auto (default), nix, brew
+export DOTFILES_TOOLCHAIN_FLAVOR="${DOTFILES_TOOLCHAIN_FLAVOR:-auto}"
+
 export LESSKEYIN=$HOME/.config/less/.lesskey
 export LESSHISTFILE=$HOME/.config/less/.lesshst
 
@@ -52,6 +58,9 @@ _terminfo_dirs=(
   $HOME/.terminfo
   /Applications/kitty.app/Contents/Resources/kitty/terminfo
   /Applications/kitty.app/Contents/Resources/terminfo
+  $HOME/.nix-profile/share/terminfo
+  /etc/profiles/per-user/$USER/profile/share/terminfo
+  /nix/var/nix/profiles/default/share/terminfo
   /opt/zerobrew/prefix/opt/ncurses/share/terminfo
   /usr/share/terminfo
   ${(s/:/)TERMINFO_DIRS}
@@ -123,3 +132,18 @@ _zb_path_append "$ZEROBREW_BIN"
 _zb_path_append "$ZEROBREW_PREFIX/bin"
 
 # <<< zerobrew <<<
+
+# Nix SSL/cert fallback (when running outside full nix-daemon shell setup)
+if [[ -z "${SSL_CERT_FILE:-}" ]]; then
+  for _nix_cert in \
+    "$HOME/.nix-profile/etc/ssl/certs/ca-bundle.crt" \
+    "/etc/profiles/per-user/$USER/etc/ssl/certs/ca-bundle.crt" \
+    "/nix/var/nix/profiles/default/etc/ssl/certs/ca-bundle.crt"; do
+    if [[ -f "$_nix_cert" ]]; then
+      export SSL_CERT_FILE="$_nix_cert"
+      [[ -z "${CURL_CA_BUNDLE:-}" ]] && export CURL_CA_BUNDLE="$_nix_cert"
+      break
+    fi
+  done
+fi
+unset _nix_cert

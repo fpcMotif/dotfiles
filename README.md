@@ -74,6 +74,27 @@ chezmoi edit ~/.zshrc  # Edit managed file
 chezmoi add ~/.some-config  # Track a new file
 ```
 
+## Nix + macOS compatibility
+
+This setup now supports both Nix and Brew-style environments without rewriting rc files.
+
+- `DOTFILES_PKG_STACK` controls executable path priority:
+  - `auto` (default): include both Nix and Brew paths
+  - `nix`: prefer Nix-only path stack
+  - `brew`: prefer Brew-only path stack
+  - `hybrid`: include both explicitly
+- `DOTFILES_TOOLCHAIN_FLAVOR` controls build/linker flags:
+  - `auto` (default): follows `DOTFILES_PKG_STACK`
+  - `nix`: avoid injecting Brew-specific `LDFLAGS/CPPFLAGS`
+  - `brew`: apply Brew Tcl/Tk and pkg-config hints
+
+Add overrides in `~/.config/zsh/.secret` (or another local, ignored file), for example:
+
+```bash
+export DOTFILES_PKG_STACK=nix
+export DOTFILES_TOOLCHAIN_FLAVOR=nix
+```
+
 ## Credits
 
 Heavily inspired by and learned from:

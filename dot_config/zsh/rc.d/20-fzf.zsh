@@ -2,9 +2,19 @@
 
 # ── FZF Init ─────────────────────────────────────────────────────────────────
 [ -f ~/.fzf.zsh ] && source ~/.fzf.zsh
-# Try known brew prefixes (zerobrew > homebrew > nanobrew) — no subprocess needed
-for _fzf_prefix in /opt/zerobrew/prefix /opt/homebrew /opt/nanobrew/prefix; do
-  if [[ -d "$_fzf_prefix/opt/fzf/shell" ]]; then
+# Try common Nix/Brew prefixes with no subprocess calls.
+for _fzf_prefix in \
+  "$HOME/.nix-profile" \
+  "/etc/profiles/per-user/$USER/profile" \
+  "/nix/var/nix/profiles/default" \
+  /opt/zerobrew/prefix \
+  /opt/homebrew \
+  /opt/nanobrew/prefix; do
+  if [[ -d "$_fzf_prefix/share/fzf" ]]; then
+    source "$_fzf_prefix/share/fzf/completion.zsh" 2>/dev/null
+    source "$_fzf_prefix/share/fzf/key-bindings.zsh" 2>/dev/null
+    break
+  elif [[ -d "$_fzf_prefix/opt/fzf/shell" ]]; then
     source "$_fzf_prefix/opt/fzf/shell/completion.zsh" 2>/dev/null
     source "$_fzf_prefix/opt/fzf/shell/key-bindings.zsh" 2>/dev/null
     break

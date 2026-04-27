@@ -3,6 +3,7 @@
 # We use ~/.local/bin/brew as a smart router:
 # - formula-style package operations prefer zerobrew
 # - cask and unsupported brew operations route to Homebrew
+# If DOTFILES_PKG_STACK=nix, PATH/toolchain behavior is driven from zsh env files.
 
 # Added by OrbStack: command-line tools and integration
 # Comment this line if you don't want it to be added again.
