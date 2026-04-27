@@ -1,10 +1,15 @@
 # 10-env.zsh — Environment, PATH, history, options, editor, build flags
+# Interactive/session owner for shell UX environment.
+# Keep .zshenv limited to minimal universal exports; if Home Manager adopts env,
+# prefer Nix-generated shared vars and keep this file focused on interactive-only behavior.
 
 # ── Zsh Options ──────────────────────────────────────────────────────────────
 setopt AUTO_CD AUTO_MENU COMPLETE_IN_WORD NO_BEEP PROMPT_CR
 setopt HIST_IGNORE_ALL_DUPS HIST_IGNORE_SPACE HIST_VERIFY SHARE_HISTORY
 setopt INTERACTIVE_COMMENTS HIST_FCNTL_LOCK HIST_FIND_NO_DUPS HIST_SAVE_NO_DUPS
 unsetopt NOMATCH AUTO_REMOVE_SLASH
+KEYTIMEOUT=1  # interactive key-sequence responsiveness
+HISTORY_SUBSTRING_SEARCH_PREFIXED=1  # interactive history-substring-search behavior
 
 # ── History ──────────────────────────────────────────────────────────────────
 HISTFILE=${HISTFILE:-$HOME/.zsh_history}
@@ -52,6 +57,27 @@ fi
 
 alias sudo='sudo -E'
 
+# ── Interactive FZF Defaults (UI/preview behavior belongs in rc.d) ──────────
+__tree_ignore="-I '.git' -I '*.py[co]' -I '__pycache__'"
+__fd_command="-L -H --no-ignore-vcs ${__tree_ignore//-I/-E}"
+export FZF_DEFAULT_COMMAND="fd $__fd_command"
+export FZF_DEFAULT_OPTS="
+--reverse --ansi --no-multi
+--bind=ctrl-u:up,ctrl-e:down,ctrl-n:backward-char,ctrl-i:forward-char,ctrl-b:backward-word,ctrl-h:forward-word
+--border --color=dark
+--color=fg:-1,bg:-1,hl:#5fff87,fg+:-1,bg+:-1,hl+:#ffaf5f
+--color=info:#af87ff,prompt:#5fff87,pointer:#ff87d7,marker:#ff87d7,spinner:#ff87d7
+"
+if [[ -v __FZF_PREVIEW ]]; then
+  unset __FZF_PREVIEW
+  FZF_DEFAULT_OPTS="$FZF_DEFAULT_OPTS
+--preview='(
+  bat --color=always {} ||
+  tree -ahpCL 3 $__tree_ignore {}
+) 2>/dev/null | head -n 100'"
+fi
+unset __tree_ignore __fd_command
+
 # ── Build & SDK Flags (auto-detect active brew prefix) ───────────────────────
 _brew_prefix=""
 for _bp in /opt/zerobrew/prefix /opt/homebrew /opt/nanobrew/prefix; do
@@ -73,7 +99,8 @@ fi
   export CPPFLAGS="-isysroot $SDKROOT $CPPFLAGS"
 }
 
-# ── Theme Settings ───────────────────────────────────────────────────────────
+# ── Session/UI Environment (single owner: rc.d/10-env.zsh) ──────────────────
+# These are intentionally *not* duplicated in .zshenv.
 export BAT_THEME="Catppuccin-macchiato"
 export EZA_CONFIG_DIR="$HOME/.config/eza"
 export HOMEBREW_NO_ANALYTICS=1
