@@ -112,7 +112,8 @@ export function renderBoardSummary(snapshot: BoardSnapshot): string {
 
 export function renderMutationSummary(result: MutationResult): string {
 	const lines = [result.message, renderBoardSummary(result.snapshot)];
-	const focus = renderFocusLines(result.snapshot);
+	const focusBuckets = collectFocusBuckets(result.snapshot);
+	const focus = renderFocusLines(result.snapshot, focusBuckets);
 	if (focus.length > 0) {
 		lines.push(...focus);
 	}
@@ -132,8 +133,7 @@ export function renderPromptSummary(snapshot: BoardSnapshot): string | null {
 	if (!snapshot.exists || snapshot.tasks.length === 0) {
 		return null;
 	}
-	const active = snapshot.tasks.filter((task) => ACTIVE_COLUMNS.has(task.meta.status));
-	const ready = snapshot.tasks.filter((task) => task.meta.status === "ready");
+	const { active, ready } = collectFocusBuckets(snapshot);
 	if (active.length === 0 && ready.length === 0) {
 		return null;
 	}
@@ -157,9 +157,11 @@ export function renderPromptSummary(snapshot: BoardSnapshot): string | null {
 	return lines.join("\n");
 }
 
-function renderFocusLines(snapshot: BoardSnapshot): string[] {
-	const active = snapshot.tasks.filter((task) => ACTIVE_COLUMNS.has(task.meta.status));
-	const ready = snapshot.tasks.filter((task) => task.meta.status === "ready");
+function renderFocusLines(
+	_snapshot: BoardSnapshot,
+	buckets: { active: StoredTask[]; ready: StoredTask[] } = collectFocusBuckets(_snapshot),
+): string[] {
+	const { active, ready } = buckets;
 	const lines: string[] = [];
 	if (active.length > 0) {
 		lines.push(`Active: ${active.slice(0, 3).map((task) => compactTaskLabel(task, 40)).join(" | ")}`);
@@ -168,6 +170,21 @@ function renderFocusLines(snapshot: BoardSnapshot): string[] {
 		lines.push(`Ready: ${ready.slice(0, 3).map((task) => compactTaskLabel(task, 40)).join(" | ")}`);
 	}
 	return lines;
+}
+
+// Avoid repeated full-array scans while rendering prompt/widget focus sections.
+function collectFocusBuckets(snapshot: BoardSnapshot): { active: StoredTask[]; ready: StoredTask[] } {
+	const active: StoredTask[] = [];
+	const ready: StoredTask[] = [];
+	for (const task of snapshot.tasks) {
+		if (ACTIVE_COLUMNS.has(task.meta.status)) {
+			active.push(task);
+		}
+		if (task.meta.status === "ready") {
+			ready.push(task);
+		}
+	}
+	return { active, ready };
 }
 
 function countTasks(snapshot: BoardSnapshot): Record<TaskStatus, number> {
