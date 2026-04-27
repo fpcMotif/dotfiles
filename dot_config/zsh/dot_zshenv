@@ -20,7 +20,6 @@ export EDITOR="${EDITOR:-vi}"
 export VISUAL="${VISUAL:-$EDITOR}"
 
 export BAT_THEME="Catppuccin-macchiato"
-export HOMEBREW_NO_ANALYTICS=1
 export RANGER_LOAD_DEFAULT_RC="FALSE"
 export PNPM_HOME=$HOME/Library/pnpm
 
@@ -75,51 +74,60 @@ export POWERLINE_NERD_FONTS=1
 # Only enable if cliproxy is actually running on port 8317
 # export ANTHROPIC_API_ENDPOINT=http://localhost:8317/api/provider/anthropic
 # export ANTHROPIC_API_KEY=local-amp-proxy-key
-# >>> zerobrew >>>
-# zerobrew
-export ZEROBREW_DIR=$HOME/.zerobrew
-export ZEROBREW_BIN=$HOME/.zerobrew/bin
-export ZEROBREW_ROOT=/opt/zerobrew
-export ZEROBREW_PREFIX=/opt/zerobrew
-export PKG_CONFIG_PATH="$ZEROBREW_PREFIX/lib/pkgconfig:${PKG_CONFIG_PATH:-}"
 
-# SSL/TLS certificates (only if ca-certificates is installed)
-if [ -z "${CURL_CA_BUNDLE:-}" ] || [ -z "${SSL_CERT_FILE:-}" ]; then
-  if [ -f "$ZEROBREW_PREFIX/opt/ca-certificates/share/ca-certificates/cacert.pem" ]; then
-    [ -z "${CURL_CA_BUNDLE:-}" ] && export CURL_CA_BUNDLE="$ZEROBREW_PREFIX/opt/ca-certificates/share/ca-certificates/cacert.pem"
-    [ -z "${SSL_CERT_FILE:-}" ] && export SSL_CERT_FILE="$ZEROBREW_PREFIX/opt/ca-certificates/share/ca-certificates/cacert.pem"
-  elif [ -f "$ZEROBREW_PREFIX/etc/ca-certificates/cacert.pem" ]; then
-    [ -z "${CURL_CA_BUNDLE:-}" ] && export CURL_CA_BUNDLE="$ZEROBREW_PREFIX/etc/ca-certificates/cacert.pem"
-    [ -z "${SSL_CERT_FILE:-}" ] && export SSL_CERT_FILE="$ZEROBREW_PREFIX/etc/ca-certificates/cacert.pem"
-  elif [ -f "$ZEROBREW_PREFIX/etc/openssl/cert.pem" ]; then
-    [ -z "${CURL_CA_BUNDLE:-}" ] && export CURL_CA_BUNDLE="$ZEROBREW_PREFIX/etc/openssl/cert.pem"
-    [ -z "${SSL_CERT_FILE:-}" ] && export SSL_CERT_FILE="$ZEROBREW_PREFIX/etc/openssl/cert.pem"
-  elif [ -f "$ZEROBREW_PREFIX/share/ca-certificates/cacert.pem" ]; then
-    [ -z "${CURL_CA_BUNDLE:-}" ] && export CURL_CA_BUNDLE="$ZEROBREW_PREFIX/share/ca-certificates/cacert.pem"
-    [ -z "${SSL_CERT_FILE:-}" ] && export SSL_CERT_FILE="$ZEROBREW_PREFIX/share/ca-certificates/cacert.pem"
-  fi
+# Package manager env (only when roots exist)
+if [[ -d /opt/homebrew || -d /usr/local/Homebrew ]]; then
+  export HOMEBREW_NO_ANALYTICS=1
 fi
 
-if [ -z "${SSL_CERT_DIR:-}" ]; then
-  if [ -d "$ZEROBREW_PREFIX/etc/ca-certificates" ]; then
-    export SSL_CERT_DIR="$ZEROBREW_PREFIX/etc/ca-certificates"
-  elif [ -d "$ZEROBREW_PREFIX/etc/openssl/certs" ]; then
-    export SSL_CERT_DIR="$ZEROBREW_PREFIX/etc/openssl/certs"
-  elif [ -d "$ZEROBREW_PREFIX/share/ca-certificates" ]; then
-    export SSL_CERT_DIR="$ZEROBREW_PREFIX/share/ca-certificates"
+if [[ -d /opt/zerobrew || -d "$HOME/.zerobrew" ]]; then
+  # >>> zerobrew >>>
+  export ZEROBREW_DIR="$HOME/.zerobrew"
+  export ZEROBREW_BIN="$HOME/.zerobrew/bin"
+  export ZEROBREW_ROOT="/opt/zerobrew"
+  export ZEROBREW_PREFIX="/opt/zerobrew/prefix"
+
+  [[ -d "$ZEROBREW_PREFIX/lib/pkgconfig" ]] && \
+    export PKG_CONFIG_PATH="$ZEROBREW_PREFIX/lib/pkgconfig:${PKG_CONFIG_PATH:-}"
+
+  # SSL/TLS certificates (only if ca-certificates is installed)
+  if [ -z "${CURL_CA_BUNDLE:-}" ] || [ -z "${SSL_CERT_FILE:-}" ]; then
+    if [ -f "$ZEROBREW_PREFIX/opt/ca-certificates/share/ca-certificates/cacert.pem" ]; then
+      [ -z "${CURL_CA_BUNDLE:-}" ] && export CURL_CA_BUNDLE="$ZEROBREW_PREFIX/opt/ca-certificates/share/ca-certificates/cacert.pem"
+      [ -z "${SSL_CERT_FILE:-}" ] && export SSL_CERT_FILE="$ZEROBREW_PREFIX/opt/ca-certificates/share/ca-certificates/cacert.pem"
+    elif [ -f "$ZEROBREW_PREFIX/etc/ca-certificates/cacert.pem" ]; then
+      [ -z "${CURL_CA_BUNDLE:-}" ] && export CURL_CA_BUNDLE="$ZEROBREW_PREFIX/etc/ca-certificates/cacert.pem"
+      [ -z "${SSL_CERT_FILE:-}" ] && export SSL_CERT_FILE="$ZEROBREW_PREFIX/etc/ca-certificates/cacert.pem"
+    elif [ -f "$ZEROBREW_PREFIX/etc/openssl/cert.pem" ]; then
+      [ -z "${CURL_CA_BUNDLE:-}" ] && export CURL_CA_BUNDLE="$ZEROBREW_PREFIX/etc/openssl/cert.pem"
+      [ -z "${SSL_CERT_FILE:-}" ] && export SSL_CERT_FILE="$ZEROBREW_PREFIX/etc/openssl/cert.pem"
+    elif [ -f "$ZEROBREW_PREFIX/share/ca-certificates/cacert.pem" ]; then
+      [ -z "${CURL_CA_BUNDLE:-}" ] && export CURL_CA_BUNDLE="$ZEROBREW_PREFIX/share/ca-certificates/cacert.pem"
+      [ -z "${SSL_CERT_FILE:-}" ] && export SSL_CERT_FILE="$ZEROBREW_PREFIX/share/ca-certificates/cacert.pem"
+    fi
   fi
+
+  if [ -z "${SSL_CERT_DIR:-}" ]; then
+    if [ -d "$ZEROBREW_PREFIX/etc/ca-certificates" ]; then
+      export SSL_CERT_DIR="$ZEROBREW_PREFIX/etc/ca-certificates"
+    elif [ -d "$ZEROBREW_PREFIX/etc/openssl/certs" ]; then
+      export SSL_CERT_DIR="$ZEROBREW_PREFIX/etc/openssl/certs"
+    elif [ -d "$ZEROBREW_PREFIX/share/ca-certificates" ]; then
+      export SSL_CERT_DIR="$ZEROBREW_PREFIX/share/ca-certificates"
+    fi
+  fi
+
+  # Helper function to safely append to PATH
+  _zb_path_append() {
+      local argpath="$1"
+      case ":${PATH}:" in
+          *:"$argpath":*) ;;
+          *) export PATH="$argpath:$PATH" ;;
+      esac
+  }
+
+  _zb_path_append "$ZEROBREW_BIN"
+  _zb_path_append "$ZEROBREW_PREFIX/bin"
+  unset _zb_path_append
+  # <<< zerobrew <<<
 fi
-
-# Helper function to safely append to PATH
-_zb_path_append() {
-    local argpath="$1"
-    case ":${PATH}:" in
-        *:"$argpath":*) ;;
-        *) export PATH="$argpath:$PATH" ;;
-    esac;
-}
-
-_zb_path_append "$ZEROBREW_BIN"
-_zb_path_append "$ZEROBREW_PREFIX/bin"
-
-# <<< zerobrew <<<
