@@ -2,15 +2,51 @@
 
 # ── FZF Init ─────────────────────────────────────────────────────────────────
 [ -f ~/.fzf.zsh ] && source ~/.fzf.zsh
-# Try known brew prefixes (zerobrew > homebrew > nanobrew) — no subprocess needed
-for _fzf_prefix in /opt/zerobrew/prefix /opt/homebrew /opt/nanobrew/prefix; do
-  if [[ -d "$_fzf_prefix/opt/fzf/shell" ]]; then
-    source "$_fzf_prefix/opt/fzf/shell/completion.zsh" 2>/dev/null
-    source "$_fzf_prefix/opt/fzf/shell/key-bindings.zsh" 2>/dev/null
-    break
-  fi
-done
-unset _fzf_prefix
+
+_fzf_shell_dir=''
+
+# 1) Prefer shell integration adjacent to the fzf binary, if available
+if _fzf_bin="$(command -v fzf 2>/dev/null)"; then
+  for _candidate in \
+    "${_fzf_bin:h}/../share/fzf/shell" \
+    "${_fzf_bin:h}/../share/fzf"; do
+    if [[ -d "$_candidate" ]]; then
+      _fzf_shell_dir="$_candidate"
+      break
+    fi
+  done
+fi
+
+# 2) Probe common Nix profile locations
+if [[ -z "$_fzf_shell_dir" ]]; then
+  for _candidate in \
+    "$HOME/.nix-profile/share/fzf/shell" \
+    "$HOME/.nix-profile/share/fzf" \
+    "/nix/var/nix/profiles/default/share/fzf/shell" \
+    "/nix/var/nix/profiles/default/share/fzf"; do
+    if [[ -d "$_candidate" ]]; then
+      _fzf_shell_dir="$_candidate"
+      break
+    fi
+  done
+fi
+
+# 3) Try known brew prefixes (zerobrew > homebrew > nanobrew)
+if [[ -z "$_fzf_shell_dir" ]]; then
+  for _fzf_prefix in /opt/zerobrew/prefix /opt/homebrew /opt/nanobrew/prefix; do
+    if [[ -d "$_fzf_prefix/opt/fzf/shell" ]]; then
+      _fzf_shell_dir="$_fzf_prefix/opt/fzf/shell"
+      break
+    fi
+  done
+fi
+
+if [[ -n "$_fzf_shell_dir" ]]; then
+  [[ -f "$_fzf_shell_dir/completion.zsh" ]] && source "$_fzf_shell_dir/completion.zsh" 2>/dev/null
+  [[ -f "$_fzf_shell_dir/key-bindings.zsh" ]] && source "$_fzf_shell_dir/key-bindings.zsh" 2>/dev/null
+fi
+
+unset _fzf_bin _fzf_shell_dir _fzf_prefix _candidate
 
 # ── Default Options (Nerd Font + modern palette) ─────────────────────────────
 export FZF_DEFAULT_COMMAND='fd --type f --hidden --follow --exclude .git'
