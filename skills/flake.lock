@@ -1,0 +1,96 @@
+{
+  "nodes": {
+    "agent-skills": {
+      "inputs": {
+        "home-manager": "home-manager",
+        "nixpkgs": [
+          "nixpkgs"
+        ]
+      },
+      "locked": {
+        "lastModified": 1776741567,
+        "narHash": "sha256-TbTToAtfQBhMr85xQOQ1ZJggnt6bt8eU1RW6zxHT1rQ=",
+        "owner": "Kyure-A",
+        "repo": "agent-skills-nix",
+        "rev": "bb2ababb31f83be94eefe76009602c926025cafb",
+        "type": "github"
+      },
+      "original": {
+        "owner": "Kyure-A",
+        "repo": "agent-skills-nix",
+        "type": "github"
+      }
+    },
+    "home-manager": {
+      "inputs": {
+        "nixpkgs": [
+          "agent-skills",
+          "nixpkgs"
+        ]
+      },
+      "locked": {
+        "lastModified": 1776657094,
+        "narHash": "sha256-tqTMK+nr4kXUrErteg/1hrQ816Ss7+2RsPNYZiVpf0I=",
+        "owner": "nix-community",
+        "repo": "home-manager",
+        "rev": "29f355a7338f30f32142f4ff44e805d47d0086b1",
+        "type": "github"
+      },
+      "original": {
+        "owner": "nix-community",
+        "repo": "home-manager",
+        "type": "github"
+      }
+    },
+    "nixpkgs": {
+      "locked": {
+        "lastModified": 1776877367,
+        "narHash": "sha256-EHq1/OX139R1RvBzOJ0aMRT3xnWyqtHBRUBuO1gFzjI=",
+        "owner": "NixOS",
+        "repo": "nixpkgs",
+        "rev": "0726a0ecb6d4e08f6adced58726b95db924cef57",
+        "type": "github"
+      },
+      "original": {
+        "owner": "NixOS",
+        "ref": "nixos-unstable",
+        "repo": "nixpkgs",
+        "type": "github"
+      }
+    },
+    "root": {
+      "inputs": {
+        "agent-skills": "agent-skills",
+        "nixpkgs": "nixpkgs",
+        "vendored-claude": "vendored-claude",
+        "vendored-pi": "vendored-pi"
+      }
+    },
+    "vendored-claude": {
+      "flake": false,
+      "locked": {
+        "path": "../dot_claude/skills",
+        "type": "path"
+      },
+      "original": {
+        "path": "../dot_claude/skills",
+        "type": "path"
+      },
+      "parent": []
+    },
+    "vendored-pi": {
+      "flake": false,
+      "locked": {
+        "path": "../dot_pi/agent/skills",
+        "type": "path"
+      },
+      "original": {
+        "path": "../dot_pi/agent/skills",
+        "type": "path"
+      },
+      "parent": []
+    }
+  },
+  "root": "root",
+  "version": 7
+}

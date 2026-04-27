@@ -32,9 +32,16 @@ cc() { cofficial "$@" }
 # ── Other AI CLI Wrappers ────────────────────────────────────────────────────
 alias gy='gemini -y'
 alias oc='opencode'
-alias cdx='codex-safe'
 alias cct='cmux claude-teams --dangerously-skip-permissions'
-codex() { codex-safe "$@" }
+_codex_cli() {
+  if (( $+commands[codex-safe] )); then
+    command codex-safe "$@"
+  else
+    command codex "$@"
+  fi
+}
+alias cdx='_codex_cli'
+codex() { _codex_cli "$@" }
 
 # ── CLIProxyAPI Routing ──────────────────────────────────────────────────────
 export CLIPROXY_BASE_URL="${CLIPROXY_BASE_URL:-http://127.0.0.1:8317}"

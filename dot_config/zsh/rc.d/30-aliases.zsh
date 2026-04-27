@@ -65,7 +65,6 @@ alias gstl="git stash list"
 
 # ── 4. Package Managers ──────────────────────────────────────────────────────
 alias p="pnpm"
-alias brewst="brew bundle --file=~/.local/share/chezmoi/Brewfile 2>/dev/null || brew list"
 
 # ── 5. Misc Tools ────────────────────────────────────────────────────────────
 alias sg='ast-grep'
@@ -81,3 +80,4 @@ alias mgwa='mgrep search -w -a'
 alias mgs='mgrep search -s'
 function mgsearch() { mgrep search -c -m 20 "$@" }
 function webai() { mgrep search -w -a "$@" }
+alias sync='chezmoi update && sudo darwin-rebuild switch --flake ~/.config/nix-darwin'

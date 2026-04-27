@@ -12,12 +12,14 @@ HISTSIZE=100000
 SAVEHIST=100000
 
 # ── PATH Configuration (Deduplicated) ────────────────────────────────────────
+# Nix owns CLI tools. Home Manager's profile comes first; ~/.nix-profile is
+# kept late as an ad-hoc scratch profile only.
 typeset -U path PATH
 path=(
+  /etc/profiles/per-user/$USER/bin
+  /run/current-system/sw/bin
+  /nix/var/nix/profiles/default/bin
   $HOME/.local/bin
-  /opt/zerobrew/prefix/bin
-  /opt/nanobrew/prefix/bin
-  /opt/homebrew/bin
   /usr/local/bin
   $HOME/bin
   $HOME/.bun/bin
@@ -32,6 +34,7 @@ path=(
   $HOME/.amp/bin
   $HOME/.fabro/bin
   /Applications/Obsidian.app/Contents/MacOS
+  $HOME/.nix-profile/bin
   $path
 )
 # Strip non-existent dirs — avoids wasted lookups on 16GB M1
@@ -52,19 +55,10 @@ fi
 
 alias sudo='sudo -E'
 
-# ── Build & SDK Flags (auto-detect active brew prefix) ───────────────────────
-_brew_prefix=""
-for _bp in /opt/zerobrew/prefix /opt/homebrew /opt/nanobrew/prefix; do
-  [[ -d "$_bp/lib" ]] && { _brew_prefix="$_bp"; break; }
-done
-if [[ -n "$_brew_prefix" ]]; then
-  export PKG_CONFIG_PATH="$_brew_prefix/lib/pkgconfig:$_brew_prefix/opt/tcl-tk/lib/pkgconfig:$PKG_CONFIG_PATH"
-  export LDFLAGS="-L$_brew_prefix/lib -L$_brew_prefix/opt/tcl-tk/lib"
-  export CPPFLAGS="-I$_brew_prefix/include -I$_brew_prefix/opt/tcl-tk/include"
-  export CFLAGS="-I$_brew_prefix/opt/tcl-tk/include"
-  export PYTHON_CONFIGURE_OPTS="--with-tcltk-includes='-I$_brew_prefix/opt/tcl-tk/include' --with-tcltk-libs='-L$_brew_prefix/opt/tcl-tk/lib -ltcl8.6 -ltk8.6'"
-fi
-unset _brew_prefix _bp
+# ── SDK Flags ────────────────────────────────────────────────────────────────
+# Brew-prefix auto-detection removed (brew is gone). If you need tcl-tk for
+# building Python with Tk support, add `tcl tk` to home.nix and reference
+# their store paths via pkg-config — `pkg-config --variable=prefix tcl`.
 if [[ -z "$SDKROOT" ]]; then
   export SDKROOT="$(xcrun --show-sdk-path 2>/dev/null)"
 fi
@@ -76,7 +70,6 @@ fi
 # ── Theme Settings ───────────────────────────────────────────────────────────
 export BAT_THEME="Catppuccin-macchiato"
 export EZA_CONFIG_DIR="$HOME/.config/eza"
-export HOMEBREW_NO_ANALYTICS=1
 export RANGER_LOAD_DEFAULT_RC="FALSE"
 export PNPM_HOME=$HOME/Library/pnpm
 export LESSKEYIN=$HOME/.config/less/.lesskey

@@ -6,6 +6,9 @@ README.md
 CLAUDE.md
 LICENSE
 
+# Declarative skills catalog (consumed by ~/nixos-config, not by chezmoi)
+skills
+
 # Local overrides
 .zshrc.local
 
@@ -17,6 +20,7 @@ LICENSE
 .config/zsh/.DS_Store
 
 # Claude Code runtime (not config)
+.claude/skills
 .claude/cache
 .claude/sessions
 .claude/projects
@@ -46,6 +50,7 @@ LICENSE
 .claude/*.bak*
 
 # Pi runtime (not config)
+.pi/agent/skills
 .pi/agent/cache
 .pi/agent/.pi
 .pi/agent/.extmgr-cache
