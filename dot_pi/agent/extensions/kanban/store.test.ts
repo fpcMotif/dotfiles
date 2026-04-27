@@ -99,13 +99,9 @@ describe("kanban store", () => {
 
 		test("persistTaskUpdate removes new file and restores old when paths differ and appendEvent throws", () => {
 			seedTask(tempDir);
-			let callCount = 0;
-			const originalTaskFilename = schema.taskFilename;
-			spyOn(schema, "taskFilename").mockImplementation((alias, title) => {
-				callCount++;
-				if (callCount === 2) return "t-001-moved-task.md";
-				return originalTaskFilename(alias, title);
-			});
+			spyOn(schema, "taskFilename").mockImplementation(
+				() => "t-001-moved-task.md",
+			);
 			spyOn(fs, "appendFileSync").mockImplementation(() => {
 				throw new Error("Simulated throw after writing different path");
 			});
