@@ -1,7 +1,8 @@
 #!/usr/bin/env bash
 set -euo pipefail
 
-export PATH="/usr/bin:/bin:/usr/sbin:/sbin:$HOME/.local/bin:$HOME/.bun/bin:/opt/zerobrew/prefix/bin:$PATH"
+source "$(cd -- "$(dirname -- "$0")" && pwd)/path-builder.sh"
+pi_agent_apply_path
 
 SETTINGS_FILE="$HOME/.pi/agent/settings.json"
 AGENTS_FILE="$HOME/.pi/agent/AGENTS.md"
@@ -220,13 +221,13 @@ try:
     else:
         print('PASS  settings.json contains the expected package set')
     prefix = settings_data.get('shellCommandPrefix', '')
-    if '/usr/bin:/bin:/usr/sbin:/sbin' in prefix:
+    if 'path-builder.sh' in prefix and 'pi_agent_apply_path' in prefix:
         if '$(npm config get prefix)' in prefix:
             print('FAIL  shellCommandPrefix still contains npm reference')
         else:
-            print('PASS  shellCommandPrefix includes system bins (no npm)')
+            print('PASS  shellCommandPrefix uses shared path builder (no npm)')
     else:
-        print('FAIL  shellCommandPrefix is missing system bins')
+        print('FAIL  shellCommandPrefix is missing shared path builder')
 except Exception as exc:
     print(f'FAIL  Could not parse settings.json: {exc}')
 

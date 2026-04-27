@@ -3,7 +3,7 @@
   "defaultProvider": "openai-codex",
   "defaultModel": "gpt-5.4",
   "defaultThinkingLevel": "xhigh",
-  "shellCommandPrefix": "export PATH='/usr/bin:/bin:/usr/sbin:/sbin:$HOME/.local/bin:$HOME/.bun/bin:/opt/zerobrew/prefix/bin:$PATH'; eval \"$(zoxide init bash --cmd cd)\"",
+  "shellCommandPrefix": "source \"$HOME/.pi/agent/scripts/path-builder.sh\"; pi_agent_apply_path; eval \"$(zoxide init bash --cmd cd)\"",
   "npmCommand": [
     "{{ .chezmoi.homeDir }}/.local/bin/pi-npm-bun"
   ],

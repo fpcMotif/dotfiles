@@ -1,7 +1,8 @@
 #!/usr/bin/env bash
 set -euo pipefail
 
-export PATH="/usr/bin:/bin:/usr/sbin:/sbin:$HOME/.local/bin:$HOME/.bun/bin:/opt/zerobrew/prefix/bin:$PATH"
+source "$(cd -- "$(dirname -- "$0")" && pwd)/scripts/path-builder.sh"
+pi_agent_apply_path
 
 require_cmd() {
   if ! command -v "$1" >/dev/null 2>&1; then
