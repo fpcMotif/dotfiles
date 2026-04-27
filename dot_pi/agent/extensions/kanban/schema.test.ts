@@ -16,19 +16,21 @@ import {
 	DEFAULT_CONFIG,
 	DEFAULT_TASK_BODY,
 } from "./schema";
+import { TASK_STATUSES } from "./types";
 import type { StoredTask, TaskStatus, WipStatus } from "./types";
 
 describe("kanban schema utilities", () => {
 	test("isTaskStatus", () => {
-		expect(isTaskStatus("backlog")).toBe(true);
-		expect(isTaskStatus("ready")).toBe(true);
-		expect(isTaskStatus("doing")).toBe(true);
-		expect(isTaskStatus("review")).toBe(true);
-		expect(isTaskStatus("done")).toBe(true);
-		expect(isTaskStatus("blocked")).toBe(true);
+		for (const status of TASK_STATUSES) {
+			expect(isTaskStatus(status)).toBe(true);
+		}
 		expect(isTaskStatus("invalid")).toBe(false);
+		expect(isTaskStatus("")).toBe(false);
 		expect(isTaskStatus(123)).toBe(false);
 		expect(isTaskStatus(null)).toBe(false);
+		expect(isTaskStatus(undefined)).toBe(false);
+		expect(isTaskStatus({})).toBe(false);
+		expect(isTaskStatus([])).toBe(false);
 	});
 
 	test("isWipStatus", () => {
