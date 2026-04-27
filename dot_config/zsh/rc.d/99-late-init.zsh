@@ -12,11 +12,23 @@ fi
 
 # ── cmux Helpers ─────────────────────────────────────────────────────────────
 _CMUX_ZDOTDIR="${ZDOTDIR:-$HOME/.config/zsh}"
-[[ -r $_CMUX_ZDOTDIR/cmux.zsh ]] && source $_CMUX_ZDOTDIR/cmux.zsh
+if [[ -r $_CMUX_ZDOTDIR/cmux.zsh ]]; then
+  source $_CMUX_ZDOTDIR/cmux.zsh
+else
+  log_debug "Skipping cmux init: $_CMUX_ZDOTDIR/cmux.zsh not readable"
+fi
 unset _CMUX_ZDOTDIR
 
 # ── Consolidate Functions ────────────────────────────────────────────────────
-[[ -f $ZDOTDIR/function.zsh ]] && source $ZDOTDIR/function.zsh
+if [[ -f $ZDOTDIR/function.zsh ]]; then
+  source $ZDOTDIR/function.zsh
+else
+  log_debug "Skipping function.zsh: $ZDOTDIR/function.zsh not found"
+fi
 
 # ── Load Local Overrides (last, highest priority) ────────────────────────────
-[[ -r $HOME/.zshrc.local ]] && source $HOME/.zshrc.local
+if [[ -r $HOME/.zshrc.local ]]; then
+  source $HOME/.zshrc.local
+else
+  log_debug "Skipping local overrides: $HOME/.zshrc.local not readable"
+fi

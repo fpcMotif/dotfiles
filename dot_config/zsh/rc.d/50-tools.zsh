@@ -4,10 +4,21 @@
 export AGENT_BROWSER_CDP_URL="http://localhost:9222"
 alias canary-start='~/.local/bin/canary-debug'
 ab() {
-    if ! curl -s "http://localhost:9222/json/version" > /dev/null 2>&1; then
-        ~/.local/bin/canary-debug > /dev/null 2>&1
+    if (( ! $+commands[curl] )); then
+        log_debug "Skipping agent-browser bootstrap check: curl not found"
+    elif ! curl -s "http://localhost:9222/json/version" > /dev/null 2>&1; then
+        if [[ -x "$HOME/.local/bin/canary-debug" ]]; then
+            "$HOME/.local/bin/canary-debug" > /dev/null 2>&1
+        else
+            log_debug "Skipping canary bootstrap: $HOME/.local/bin/canary-debug not executable"
+        fi
     fi
-    agent-browser "$@"
+    if (( $+commands[agent-browser] )); then
+      agent-browser "$@"
+    else
+      log_debug "Skipping agent-browser launch: command not found"
+      return 127
+    fi
 }
 
 # ── Bun ──────────────────────────────────────────────────────────────────────
@@ -18,10 +29,30 @@ export BUN_INSTALL="$HOME/.bun"
 [ -f "${GHCUP_INSTALL_BASE_PREFIX:=$HOME}/.ghcup/env" ] && source "${GHCUP_INSTALL_BASE_PREFIX:=$HOME}/.ghcup/env"
 
 # ── Kiro ─────────────────────────────────────────────────────────────────────
-[[ "$TERM_PROGRAM" == "kiro" ]] && . "$(kiro --locate-shell-integration-path zsh)"
+if [[ "$TERM_PROGRAM" == "kiro" ]]; then
+  if (( $+commands[kiro] )); then
+    _kiro_integration_path="$(kiro --locate-shell-integration-path zsh 2>/dev/null)"
+    if [[ -n "$_kiro_integration_path" && -r "$_kiro_integration_path" ]]; then
+      . "$_kiro_integration_path"
+    else
+      log_debug "Skipping kiro shell integration: path not readable"
+    fi
+    unset _kiro_integration_path
+  else
+    log_debug "Skipping kiro shell integration: command not found"
+  fi
+fi
 
 # ── Mole ─────────────────────────────────────────────────────────────────────
 (( $+commands[mole] )) && eval "$(mole completion zsh)"
 
 # ── Ruby/Try ─────────────────────────────────────────────────────────────────
-[[ -f "$HOME/.local/try.rb" ]] && eval "$(ruby ~/.local/try.rb init ~/src/tries)"
+if [[ -f "$HOME/.local/try.rb" ]]; then
+  if (( $+commands[ruby] )); then
+    eval "$(ruby ~/.local/try.rb init ~/src/tries)"
+  else
+    log_debug "Skipping try.rb init: ruby not found"
+  fi
+else
+  log_debug "Skipping try.rb init: $HOME/.local/try.rb not found"
+fi

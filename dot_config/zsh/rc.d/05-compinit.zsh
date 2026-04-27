@@ -19,4 +19,8 @@ zstyle ":completion:*" file-sort change
 zstyle ":completion:*" matcher-list "m:{[:lower:][:upper:]}={[:upper:][:lower:]}" "r:|=*" "l:|=* r:|=*"
 
 # Tabtab (pnpm)
-[[ -f $ZDOTDIR/tabtab/pnpm.zsh ]] && source $ZDOTDIR/tabtab/pnpm.zsh
+if [[ -f $ZDOTDIR/tabtab/pnpm.zsh ]]; then
+  source $ZDOTDIR/tabtab/pnpm.zsh
+else
+  log_debug "Skipping pnpm tabtab init: $ZDOTDIR/tabtab/pnpm.zsh not found"
+fi

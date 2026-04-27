@@ -66,7 +66,11 @@ if [[ -n "$_brew_prefix" ]]; then
 fi
 unset _brew_prefix _bp
 if [[ -z "$SDKROOT" ]]; then
-  export SDKROOT="$(xcrun --show-sdk-path 2>/dev/null)"
+  if (( $+commands[xcrun] )); then
+    export SDKROOT="$(xcrun --show-sdk-path 2>/dev/null)"
+  else
+    log_debug "Skipping SDKROOT detection: xcrun not found"
+  fi
 fi
 [[ -n "$SDKROOT" ]] && {
   export CFLAGS="-isysroot $SDKROOT $CFLAGS"

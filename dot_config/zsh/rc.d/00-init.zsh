@@ -1,8 +1,18 @@
 # 00-init.zsh — Plugin manager + core tool initialization
 # Loaded first: sheldon plugins, post-plugin keybindings, starship prompt
 
+# ── Debug Logging (silent by default) ───────────────────────────────────────
+log_debug() {
+  (( ${ZSH_INIT_DEBUG:-0} )) || return 0
+  print -u2 -- "[zsh-init] $*"
+}
+
 # ── Plugin Manager (sheldon) ────────────────────────────────────────────────
-eval "$(sheldon source)"
+if (( $+commands[sheldon] )); then
+  eval "$(sheldon source)"
+else
+  log_debug "Skipping sheldon init: command not found"
+fi
 
 bindkey -e
 WORDCHARS=${WORDCHARS//[\/]}
@@ -18,4 +28,6 @@ unset key
 # ── Starship Prompt ─────────────────────────────────────────────────────────
 if (( $+commands[starship] )); then
   eval "$(starship init zsh)"
+else
+  log_debug "Skipping starship init: command not found"
 fi

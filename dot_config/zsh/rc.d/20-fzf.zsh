@@ -1,30 +1,46 @@
 # 20-fzf.zsh — FZF configuration, keybindings, and helper functions
 
 # ── FZF Init ─────────────────────────────────────────────────────────────────
-[ -f ~/.fzf.zsh ] && source ~/.fzf.zsh
+if [[ -f ~/.fzf.zsh ]]; then
+  source ~/.fzf.zsh
+else
+  log_debug "Skipping ~/.fzf.zsh: file not found"
+fi
 # Try known brew prefixes (zerobrew > homebrew > nanobrew) — no subprocess needed
 for _fzf_prefix in /opt/zerobrew/prefix /opt/homebrew /opt/nanobrew/prefix; do
   if [[ -d "$_fzf_prefix/opt/fzf/shell" ]]; then
-    source "$_fzf_prefix/opt/fzf/shell/completion.zsh" 2>/dev/null
-    source "$_fzf_prefix/opt/fzf/shell/key-bindings.zsh" 2>/dev/null
+    if [[ -f "$_fzf_prefix/opt/fzf/shell/completion.zsh" ]]; then
+      source "$_fzf_prefix/opt/fzf/shell/completion.zsh" 2>/dev/null
+    else
+      log_debug "Skipping fzf completion: $_fzf_prefix/opt/fzf/shell/completion.zsh not found"
+    fi
+    if [[ -f "$_fzf_prefix/opt/fzf/shell/key-bindings.zsh" ]]; then
+      source "$_fzf_prefix/opt/fzf/shell/key-bindings.zsh" 2>/dev/null
+    else
+      log_debug "Skipping fzf key bindings: $_fzf_prefix/opt/fzf/shell/key-bindings.zsh not found"
+    fi
     break
   fi
 done
 unset _fzf_prefix
 
 # ── Default Options (Nerd Font + modern palette) ─────────────────────────────
-export FZF_DEFAULT_COMMAND='fd --type f --hidden --follow --exclude .git'
+if (( $+commands[fd] )); then
+  export FZF_DEFAULT_COMMAND='fd --type f --hidden --follow --exclude .git'
+  export FZF_CTRL_T_COMMAND='fd --type f --hidden --exclude .git --color=always'
+  export FZF_ALT_C_COMMAND='fd --type d --hidden --exclude .git --color=always'
+else
+  log_debug "Skipping fd-backed fzf defaults: fd not found"
+fi
 export FZF_DEFAULT_OPTS="--height 50% --layout=reverse --border --ansi \
   --prompt='󰭎 ' --pointer='󰁔 ' --marker='󰄬 ' \
   --color=fg:-1,bg:-1,hl:cyan,fg+:white,bg+:black,hl+:cyan \
   --color=info:yellow,prompt:cyan,pointer:green,marker:yellow,spinner:green,header:cyan"
 
 # ── CTRL-T: File search with bat preview ─────────────────────────────────────
-export FZF_CTRL_T_COMMAND='fd --type f --hidden --exclude .git --color=always'
 export FZF_CTRL_T_OPTS="--preview 'bat --style=numbers --color=always --line-range :500 {}'"
 
 # ── ALT-C: Directory search with eza tree preview ────────────────────────────
-export FZF_ALT_C_COMMAND='fd --type d --hidden --exclude .git --color=always'
 export FZF_ALT_C_OPTS="--preview 'eza --tree --level=2 --icons --color=always --no-quotes {}'"
 
 # ── Helper Functions ─────────────────────────────────────────────────────────
