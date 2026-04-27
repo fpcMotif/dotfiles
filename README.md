@@ -18,6 +18,30 @@ cp ~/.config/zsh/.secret.example ~/.config/zsh/.secret
 # Edit with your API keys
 ```
 
+
+## Nix Flake (nix-darwin + Home Manager)
+
+This repo now includes a root `flake.nix` with:
+- `darwinConfigurations.<hostname>` for macOS system activation via nix-darwin
+- `homeConfigurations.<user>` for user-level activation via Home Manager
+
+### Apply macOS system config
+
+```bash
+nix run nix-darwin -- switch --flake .#<hostname>
+```
+
+### Apply Home Manager user config
+
+```bash
+home-manager switch --flake .#<user>
+```
+
+### Responsibility boundary
+
+- **Nix installs**: packages and baseline shell program wiring (e.g. zsh, ripgrep, fd, bat, eza, starship, zoxide, jq).
+- **chezmoi customizes**: templates, machine-specific secrets, and detailed shell UX/content.
+
 ## Architecture
 
 ```
