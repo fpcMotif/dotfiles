@@ -27,19 +27,6 @@
   "enabledMcpjsonServers": [
     "qmd"
   ],
-  "hooks": {
-    "PreToolUse": [
-      {
-        "matcher": "Bash",
-        "hooks": [
-          {
-            "type": "command",
-            "command": "{{ .chezmoi.homeDir }}/.claude/hooks/rtk-rewrite.sh"
-          }
-        ]
-      }
-    ]
-  },
   "statusLine": {
     "type": "command",
     "command": "bash {{ .chezmoi.homeDir }}/.claude/statusline-command.sh"
